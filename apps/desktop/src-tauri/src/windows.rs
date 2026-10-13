@@ -377,10 +377,32 @@ impl ShowCapWindow {
                 .title();
                 let should_protect = should_protect_window(app, &title);
 
+                // 中文版多屏修复：预先取得目标显示器的期望物理矩形，
+                // 既用于 URL 传给前端自检，也用于窗口创建后的物理像素布局。
+                #[cfg(windows)]
+                let (expected_x, expected_y, expected_w, expected_h) = {
+                    let position = display.raw_handle().physical_position().unwrap();
+                    let size = display.physical_size().unwrap();
+                    (
+                        position.x() as i32,
+                        position.y() as i32,
+                        size.width() as u32,
+                        size.height() as u32,
+                    )
+                };
+                #[cfg(windows)]
+                let geometry_query = format!(
+                    "&ex={expected_x}&ey={expected_y}&ew={expected_w}&eh={expected_h}"
+                );
+                #[cfg(not(windows))]
+                let geometry_query = String::new();
+
                 let mut window_builder = self
                     .window_builder(
                         app,
-                        format!("/target-select-overlay?displayId={display_id}&isHoveredDisplay={is_hovered_display}"),
+                        format!(
+                            "/target-select-overlay?displayId={display_id}&isHoveredDisplay={is_hovered_display}{geometry_query}"
+                        ),
                     )
                     .maximized(false)
                     .resizable(false)
@@ -412,25 +434,53 @@ impl ShowCapWindow {
 
                 #[cfg(windows)]
                 {
-                    let position = display.raw_handle().physical_position().unwrap();
-                    let logical_size = display.logical_size().unwrap();
-                    let physical_size = display.physical_size().unwrap();
-                    use tauri::{LogicalSize, PhysicalPosition, PhysicalSize};
-                    let _ = window.set_size(LogicalSize::new(
-                        logical_size.width(),
-                        logical_size.height(),
-                    ));
-                    let _ = window.set_position(PhysicalPosition::new(position.x(), position.y()));
-                    tokio::time::sleep(std::time::Duration::from_millis(5)).await;
+                    // 中文版多屏修复：必须用物理像素布局。旧实现用 LogicalSize，
+                    // 其换算依赖窗口当前 scale factor——窗口创建在主屏，当主屏缩放(如 200%)
+                    // 与副屏(如 100%)不一致时，副屏 overlay 会被放大 2 倍，横跨两屏、
+                    // 中心落在接缝，框选坐标随之按比例偏移。
+                    use tauri::{PhysicalPosition, PhysicalSize};
+                    let _ = window.set_size(PhysicalSize::new(expected_w, expected_h));
+                    let _ =
+                        window.set_position(PhysicalPosition::new(expected_x, expected_y));
 
-                    let actual_physical_size = window.inner_size().unwrap();
-                    // this third time makes it work when the resulting size is wrong, god knows why
-                    if physical_size.width() != actual_physical_size.width as f64 {
-                        let _ = window.set_size(LogicalSize::new(
-                            logical_size.width(),
-                            logical_size.height(),
-                        ));
-                    }
+                    // 中文版多屏修复：持续校验 overlay 实际位置/尺寸（覆盖页面加载后
+                    // show() 以及 show 前后可能到达的 WM_DPICHANGED/WebView2 初始化竞态），
+                    // 不符就用物理像素重新强制设置，匹配后立即退出；约 2 秒仍不收敛则记录告警。
+                    let verify_window = window.clone();
+                    tokio::spawn(async move {
+                        let expected = (expected_x, expected_y, expected_w, expected_h);
+                        for attempt in 0..20u32 {
+                            tokio::time::sleep(std::time::Duration::from_millis(100)).await;
+                            let actual_position = verify_window
+                                .outer_position()
+                                .map(|p| (p.x, p.y))
+                                .unwrap_or_default();
+                            let actual_size = verify_window
+                                .inner_size()
+                                .map(|s| (s.width, s.height))
+                                .unwrap_or_default();
+                            if actual_position == (expected.0, expected.1)
+                                && actual_size == (expected.2, expected.3)
+                            {
+                                if attempt > 0 {
+                                    tracing::info!(
+                                        attempt,
+                                        expected = ?expected,
+                                        "TargetSelectOverlay geometry settled"
+                                    );
+                                }
+                                return;
+                            }
+                            let _ = verify_window
+                                .set_size(PhysicalSize::new(expected.2, expected.3));
+                            let _ = verify_window
+                                .set_position(PhysicalPosition::new(expected.0, expected.1));
+                        }
+                        tracing::warn!(
+                            expected = ?expected,
+                            "TargetSelectOverlay geometry failed to settle after retries"
+                        );
+                    });
                 }
 
                 app.state::<WindowFocusManager>()

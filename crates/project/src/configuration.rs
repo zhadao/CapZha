@@ -1,5 +1,4 @@
 use std::{
-    env::temp_dir,
     fmt,
     ops::{Add, Div, Mul, Sub, SubAssign},
     path::Path,
@@ -1150,15 +1149,22 @@ impl ProjectConfiguration {
         self.validate()
             .map_err(|error| std::io::Error::new(std::io::ErrorKind::InvalidData, error))?;
 
-        let temp_path = temp_dir().join(uuid::Uuid::new_v4().to_string());
+        // 中文版修复：临时文件必须与目标同目录（同盘），否则跨磁盘分区 rename 会报
+        // os error 17 (EXDEV)，导致自定义存储目录在其他盘时录制完成即失败
+        let target_path = project_path.as_ref().join("project-config.json");
+        let temp_path = project_path
+            .as_ref()
+            .join(format!("project-config.json.{}.tmp", uuid::Uuid::new_v4()));
 
         // Write to temporary file first to ensure readers don't see partial files
         std::fs::write(&temp_path, serde_json::to_string_pretty(self)?)?;
 
-        std::fs::rename(
-            &temp_path,
-            project_path.as_ref().join("project-config.json"),
-        )?;
+        if let Err(_rename_err) = std::fs::rename(&temp_path, &target_path) {
+            // 跨盘等 rename 失败时回退为 copy + delete，保证写入仍能完成
+            let copy_result = std::fs::copy(&temp_path, &target_path);
+            let _ = std::fs::remove_file(&temp_path);
+            copy_result?;
+        }
 
         Ok(())
     }

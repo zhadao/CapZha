@@ -737,8 +737,13 @@ function Page() {
 					screens.data?.find((s) => s.id === screenId) ?? screens.data?.[0];
 			} else if (rawOptions.captureTarget.variant === "area") {
 				const screenId = rawOptions.captureTarget.screen;
-				screen =
-					screens.data?.find((s) => s.id === screenId) ?? screens.data?.[0];
+				screen = screens.data?.find((s) => s.id === screenId);
+				// 中文版修复多屏跳屏：area 选区必须忠于框选时所在屏，禁止静默回退到第一块屏
+				if (!screen && screenId)
+					console.warn(
+						"[Cap] Area target screen not found in screen list:",
+						screenId,
+					);
 			}
 
 			return screen;
@@ -771,12 +776,12 @@ function Page() {
 					return { variant: "window", id: window.id };
 				}
 				case "area": {
-					const screen = options.screen();
-					if (!screen) return;
+					// 中文版修复多屏跳屏：直接使用框选时持久化的 screenId，
+					// 不经 screens 列表查找（查找失败曾静默回退到第一块屏导致"跳屏"）
 					return {
 						variant: "area",
 						bounds: rawOptions.captureTarget.bounds,
-						screen: screen.id,
+						screen: rawOptions.captureTarget.screen,
 					};
 				}
 			}

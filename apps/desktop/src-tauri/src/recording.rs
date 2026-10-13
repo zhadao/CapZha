@@ -1053,7 +1053,12 @@ fn mic_actor_not_running(err: &anyhow::Error) -> bool {
 pub async fn stop_recording(app: AppHandle, state: MutableState<'_, App>) -> Result<(), String> {
     let mut state = state.write().await;
     let Some(current_recording) = state.clear_current_recording() else {
-        return Err("Recording not in progress".to_string())?;
+        // 中文版修复：录制已结束（如 actor 出错自清理后）时窗口可能仍在，
+        // 此时点停止不应报错，而是幂等地清理控件窗口并返回成功
+        if let Some(window) = CapWindowId::RecordingControls.get(&app) {
+            let _ = window.close();
+        }
+        return Ok(());
     };
 
     let completed_recording = current_recording.stop().await.map_err(|e| e.to_string())?;

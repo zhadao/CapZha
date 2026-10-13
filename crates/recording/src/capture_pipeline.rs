@@ -243,9 +243,24 @@ pub fn target_to_display_and_crop(
 ) -> anyhow::Result<(scap_targets::Display, Option<CropBounds>)> {
     use scap_targets::{bounds::*, *};
 
-    let display = target
-        .display()
-        .ok_or_else(|| anyhow!("Display not found"))?;
+    // 中文版多屏修复：注意此处变量不可命名为 `display`，
+    // `use scap_targets::{bounds::*, *}` 引入的 tracing::display 会将其遮蔽导致编译错误
+    let target_display = match target.display() {
+        Some(d) => d,
+        None => {
+            // 中文版多屏修复：显式记录解析失败的 screen id，便于排障（不会静默回退到主屏）
+            match target {
+                ScreenCaptureTarget::Area { screen, .. }
+                | ScreenCaptureTarget::Display { id: screen } => {
+                    tracing::warn!(
+                        "Display not found for capture target screen id: {screen:?}"
+                    );
+                }
+                _ => {}
+            }
+            return Err(anyhow!("Display not found"));
+        }
+    };
 
     let crop_bounds = match target {
         ScreenCaptureTarget::Display { .. } => None,
@@ -254,7 +269,7 @@ pub fn target_to_display_and_crop(
 
             #[cfg(target_os = "macos")]
             {
-                let raw_display_bounds = display
+                let raw_display_bounds = target_display
                     .raw_handle()
                     .logical_bounds()
                     .ok_or_else(|| anyhow!("No display bounds"))?;
@@ -274,7 +289,7 @@ pub fn target_to_display_and_crop(
 
             #[cfg(windows)]
             {
-                let raw_display_position = display
+                let raw_display_position = target_display
                     .raw_handle()
                     .physical_position()
                     .ok_or_else(|| anyhow!("No display bounds"))?;
@@ -303,13 +318,13 @@ pub fn target_to_display_and_crop(
 
             #[cfg(windows)]
             {
-                let raw_display_size = display
+                let raw_display_size = target_display
                     .physical_size()
                     .ok_or_else(|| anyhow!("No display bounds"))?;
-                let logical_display_size = display
+                let logical_display_size = target_display
                     .logical_size()
                     .ok_or_else(|| anyhow!("No display logical size"))?;
-                Some(PhysicalBounds::new(
+                let crop = PhysicalBounds::new(
                     PhysicalPosition::new(
                         (relative_bounds.position().x() / logical_display_size.width())
                             * raw_display_size.width(),
@@ -322,12 +337,23 @@ pub fn target_to_display_and_crop(
                         (relative_bounds.size().height() / logical_display_size.height())
                             * raw_display_size.height(),
                     ),
-                ))
+                );
+                // 中文版多屏修复：记录实际使用的显示器与裁剪区域，"我框哪儿就是录哪儿"可直接从此日志核对
+                tracing::info!(
+                    display_id = ?target_display.id(),
+                    display_position = ?target_display.raw_handle().physical_position(),
+                    physical_size = ?raw_display_size,
+                    logical_size = ?logical_display_size,
+                    crop_position = ?crop.position(),
+                    crop_size = ?crop.size(),
+                    "Area capture target resolved"
+                );
+                Some(crop)
             }
         }
     };
 
-    Ok((display, crop_bounds))
+    Ok((target_display, crop_bounds))
 }
 
 #[cfg(windows)]

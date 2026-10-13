@@ -6,8 +6,8 @@ import { createMutation, useQuery } from "@tanstack/solid-query";
 import { invoke } from "@tauri-apps/api/core";
 import {
 	LogicalPosition,
-	type PhysicalPosition,
-	type PhysicalSize,
+	PhysicalPosition,
+	PhysicalSize,
 } from "@tauri-apps/api/dpi";
 import { emit } from "@tauri-apps/api/event";
 import {
@@ -16,7 +16,10 @@ import {
 	MenuItem,
 	PredefinedMenuItem,
 } from "@tauri-apps/api/menu";
-import { WebviewWindow } from "@tauri-apps/api/webviewWindow";
+import {
+	getCurrentWebviewWindow,
+	type WebviewWindow,
+} from "@tauri-apps/api/webviewWindow";
 import { type as ostype } from "@tauri-apps/plugin-os";
 import {
 	createEffect,
@@ -115,8 +118,67 @@ function Inner() {
 	const [params] = useSearchParams<{
 		displayId: DisplayId;
 		isHoveredDisplay: string;
+		ex?: string;
+		ey?: string;
+		ew?: string;
+		eh?: string;
 	}>();
 	const [options, setOptions] = useOptions();
+
+	// 中文版多屏修复：overlay 窗口几何自检自纠（最终防线）。
+	// 期望物理矩形由 Rust 端通过 URL 参数传入；当主副屏缩放比例不同时，
+	// 窗口可能在创建/显示过程中被 DPI 换算放大或偏移（旧 bug：副屏 overlay
+	// 被放大 2 倍横跨两屏、中心落在接缝）。页面加载后读取实际位置/尺寸，
+	// 与期望不符则用物理像素自我纠正，最多重试 5 次。
+	onMount(() => {
+		const expectedX = Number(params.ex);
+		const expectedY = Number(params.ey);
+		const expectedW = Number(params.ew);
+		const expectedH = Number(params.eh);
+		if (
+			!Number.isFinite(expectedX) ||
+			!Number.isFinite(expectedY) ||
+			!Number.isFinite(expectedW) ||
+			!Number.isFinite(expectedH)
+		) {
+			return;
+		}
+		void (async () => {
+			const win = getCurrentWebviewWindow();
+			for (let attempt = 0; attempt < 5; attempt++) {
+				const [position, size] = await Promise.all([
+					win.outerPosition(),
+					win.innerSize(),
+				]);
+				if (
+					position.x === expectedX &&
+					position.y === expectedY &&
+					size.width === expectedW &&
+					size.height === expectedH
+				) {
+					if (attempt > 0) {
+						console.info("[Cap] overlay geometry stabilized after correction");
+					}
+					return;
+				}
+				console.warn("[Cap] overlay geometry mismatch, correcting", {
+					expected: { x: expectedX, y: expectedY, w: expectedW, h: expectedH },
+					actual: {
+						x: position.x,
+						y: position.y,
+						w: size.width,
+						h: size.height,
+					},
+				});
+				await win.setPosition(new PhysicalPosition(expectedX, expectedY));
+				await win.setSize(new PhysicalSize(expectedW, expectedH));
+				await new Promise((resolve) => setTimeout(resolve, 60));
+			}
+			console.error("[Cap] overlay geometry failed to settle");
+		})().catch((error) => {
+			console.error("[Cap] overlay self-check failed", error);
+		});
+	});
 
 	const [toggleModeSelect, setToggleModeSelect] = createSignal(false);
 
