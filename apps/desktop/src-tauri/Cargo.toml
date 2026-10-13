@@ -12,6 +12,9 @@ workspace = true
 name = "cap_desktop_lib"
 crate-type = ["lib", "cdylib", "staticlib"]
 
+[features]
+custom-protocol = ["tauri/custom-protocol"]
+
 [build-dependencies]
 tauri-build = { version = "2.1.0", features = [] }
 
