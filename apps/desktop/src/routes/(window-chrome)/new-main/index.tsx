@@ -1,5 +1,4 @@
 import { Button } from "@cap/ui-solid";
-import { useNavigate } from "@solidjs/router";
 import { createMutation, queryOptions, useQuery } from "@tanstack/solid-query";
 import { Channel } from "@tauri-apps/api/core";
 import { listen } from "@tauri-apps/api/event";
@@ -11,7 +10,6 @@ import { getCurrentWindow, LogicalSize } from "@tauri-apps/api/window";
 import * as dialog from "@tauri-apps/plugin-dialog";
 import { type as ostype } from "@tauri-apps/plugin-os";
 import * as shell from "@tauri-apps/plugin-shell";
-import * as updater from "@tauri-apps/plugin-updater";
 import { cx } from "cva";
 import {
 	createEffect,
@@ -386,53 +384,6 @@ export default function () {
 	);
 }
 
-let hasChecked = false;
-function createUpdateCheck() {
-	if (import.meta.env.DEV) return;
-
-	const navigate = useNavigate();
-
-	onMount(async () => {
-		if (hasChecked) return;
-		hasChecked = true;
-
-		await new Promise((res) => setTimeout(res, 1000));
-
-		let update: updater.Update | undefined;
-		try {
-			const result = await updater.check();
-			if (result) update = result;
-		} catch (e) {
-			console.error("Failed to check for updates:", e);
-			await dialog.message(
-				"Unable to check for updates. Please download the latest version manually from cap.so/download. Your data will not be lost.\n\nIf this issue persists, please contact support.",
-				{ title: "Update Error", kind: "error" },
-			);
-			return;
-		}
-
-		if (!update) return;
-
-		let shouldUpdate: boolean | undefined;
-		try {
-			shouldUpdate = await dialog.confirm(
-				t("app.update.message", { version: update.version }),
-				{
-					title: t("app.update.title"),
-					okLabel: t("app.update.ok"),
-					cancelLabel: t("app.update.ignore"),
-				},
-			);
-		} catch (e) {
-			console.error("Failed to show update dialog:", e);
-			return;
-		}
-
-		if (!shouldUpdate) return;
-		navigate("/update");
-	});
-}
-
 function Page() {
 	const { rawOptions, setOptions } = useRecordingOptions();
 	const currentRecording = createCurrentRecordingQuery();
@@ -675,8 +626,6 @@ function Page() {
 		setScreenshotsMenuOpen(false);
 		setModeInfoMenuOpen(false);
 	});
-
-	createUpdateCheck();
 
 	onMount(async () => {
 		const { __CAP__ } = window as typeof window & {

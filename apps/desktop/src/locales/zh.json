@@ -55,7 +55,7 @@
 		}
 	},
 	"recording": {
-		"formatGif": "GIF图",
+		"formatGif": "GIF",
 		"formatMp4": "MP4",
 		"formatLabel": "输出格式",
 		"storageDir": "录制保存目录",
