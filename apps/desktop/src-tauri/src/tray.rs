@@ -366,11 +366,11 @@ fn build_tray_menu(app: &AppHandle, cache: &PreviousItemsCache) -> tauri::Result
                 &MenuItem::with_id(
                     app,
                     "version",
-                    format!("Cap v{}", env!("CARGO_PKG_VERSION")),
+                    format!("CapZha v{}", env!("CARGO_PKG_VERSION")),
                     false,
                     None::<&str>,
                 )?,
-                &MenuItem::with_id(app, TrayItem::Quit, "退出 Cap", true, None::<&str>)?,
+                &MenuItem::with_id(app, TrayItem::Quit, "退出 CapZha", true, None::<&str>)?,
             ],
         );
     }
@@ -438,7 +438,7 @@ fn build_tray_menu(app: &AppHandle, cache: &PreviousItemsCache) -> tauri::Result
                 false,
                 None::<&str>,
             )?,
-            &MenuItem::with_id(app, TrayItem::Quit, "退出 Cap", true, None::<&str>)?,
+            &MenuItem::with_id(app, TrayItem::Quit, "退出 CapZha", true, None::<&str>)?,
         ],
     )
 }

@@ -45,11 +45,11 @@
 		"signOut": "退出登录"
 	},
 	"app": {
-		"title": "Cap",
+		"title": "CapZha",
 		"subtitle": "精美的屏幕录制，完全属于你。",
 		"update": {
-			"title": "更新 Cap",
-			"message": "Cap 版本 {{version}} 已发布，是否现在更新？",
+			"title": "更新 CapZha",
+			"message": "CapZha 版本 {{version}} 已发布，是否现在更新？",
 			"ok": "安装更新",
 			"ignore": "以后再说"
 		}
@@ -59,7 +59,7 @@
 		"formatMp4": "MP4",
 		"formatLabel": "输出格式",
 		"storageDir": "录制保存目录",
-		"storageDirDefault": "默认保存在系统「视频」文件夹下的 Cap 目录，按日期分类",
+		"storageDirDefault": "默认保存在系统「视频」文件夹下的 CapZha 目录，按日期分类",
 		"storageDirPick": "选择目录",
 		"storageDirReset": "恢复默认",
 		"maxRecordings": "最多保留录制数",
@@ -88,9 +88,9 @@
 		"studioFinishBehaviour": "工作室录制完成行为",
 		"studioFinishBehaviourDescription": "工作室录制完成时的行为",
 		"afterDeleteBehaviour": "删除录制后的行为",
-		"afterDeleteBehaviourDescription": "删除正在进行的录制后，Cap 是否应该重新打开？",
+		"afterDeleteBehaviourDescription": "删除正在进行的录制后，CapZha 是否应该重新打开？",
 		"deleteAfterUpload": "上传后删除即时录制",
-		"deleteAfterUploadDescription": "完成即时录制后，Cap 是否应该从您的设备中删除它？",
+		"deleteAfterUploadDescription": "完成即时录制后，CapZha 是否应该从您的设备中删除它？",
 		"crashRecovery": "崩溃恢复录制",
 		"crashRecoveryDescription": "以分段方式录制，如果应用崩溃或系统断电可以恢复。录制期间可能会占用稍多的存储空间。",
 		"multiScreenAreaMode": "多屏幕模式",
@@ -126,7 +126,7 @@
 				"description": "立即捕获并标注截图。非常适合快速捕获、错误报告和视觉交流。"
 			}
 		},
-		"defaultName": "Cap 录制",
+		"defaultName": "CapZha 录制",
 		"captureArea": {
 			"title": "捕获区域",
 			"close": "关闭",
@@ -238,14 +238,14 @@
 		"storage": "存储"
 	},
 	"settingsPage": {
-		"capPro": "Cap Pro",
+		"capPro": "CapZha Pro",
 		"autoOpenShareableLinks": "自动打开可分享链接",
-		"autoOpenShareableLinksDescription": "Cap 是否应该自动在浏览器中打开即时录制",
+		"autoOpenShareableLinksDescription": "CapZha 是否应该自动在浏览器中打开即时录制",
 		"app": "应用",
 		"alwaysShowDockIcon": "始终显示 Dock 图标",
-		"alwaysShowDockIconDescription": "即使没有可关闭的窗口，也在 Dock 中显示 Cap。",
+		"alwaysShowDockIconDescription": "即使没有可关闭的窗口，也在 Dock 中显示 CapZha。",
 		"enableSystemNotifications": "启用系统通知",
-		"enableSystemNotificationsDescription": "显示系统通知，例如复制到剪贴板、保存文件等。您可能需要通过系统通知设置手动允许 Cap 访问。",
+		"enableSystemNotificationsDescription": "显示系统通知，例如复制到剪贴板、保存文件等。您可能需要通过系统通知设置手动允许 CapZha 访问。",
 		"defaultProjectName": "默认项目名称",
 		"defaultProjectNameDescription": "选择用作默认项目和文件名的模板。",
 		"howToCustomize": "如何自定义？",
@@ -253,22 +253,22 @@
 		"recordingMode": "录制模式",
 		"excludedWindows": "排除的窗口",
 		"excludedWindowsDescription": "从录制和截图中排除的窗口列表。",
-		"excludedWindowsDescriptionWindows": "Cap 在录制时应该隐藏的窗口列表。",
+		"excludedWindowsDescriptionWindows": "CapZha 在录制时应该隐藏的窗口列表。",
 		"addWindow": "添加窗口",
 		"resetToDefaults": "重置为默认",
 		"noExclusions": "没有排除项",
 		"selfHost": "自托管",
-		"capServerUrl": "Cap 服务器 URL",
-		"capServerUrlDescription": "只有在您自托管 Cap Web 实例时才应更改此设置。",
+		"capServerUrl": "CapZha 服务器 URL",
+		"capServerUrlDescription": "只有在您自托管 CapZha Web 实例时才应更改此设置。",
 		"confirmServerChange": "您确定要将服务器 URL 更改为 '{{origin}}' 吗？您需要重新登录。",
 		"target": "目标",
 		"dateAndTime": "日期和时间",
 		"customFormats": "自定义格式",
-		"windowsExclusionNote": "注意：由于技术限制，在 Windows 上只能排除 Cap 相关的窗口。"
+		"windowsExclusionNote": "注意：由于技术限制，在 Windows 上只能排除 CapZha 相关的窗口。"
 	},
 	"hotkeysPage": {
 		"title": "快捷键",
-		"description": "配置系统全局快捷键以控制 Cap。",
+		"description": "配置系统全局快捷键以控制 CapZha。",
 		"setHotkeys": "设置快捷键...",
 		"none": "无"
 	},
@@ -306,7 +306,7 @@
 		}
 	},
 	"licensePage": {
-		"proTitle": "Cap Pro 许可证",
+		"proTitle": "CapZha Pro 许可证",
 		"proDescriptionPrefix": "您的账户已升级到 ",
 		"proDescriptionSuffix": " 并已包含商业许可证。",
 		"commercialTitle": "商业许可证",
@@ -326,7 +326,7 @@
 		"purchase": "购买许可证",
 		"loading": "加载中...",
 		"features": {
-			"commercialUse": "Cap 录制器 + 编辑器的商业使用",
+			"commercialUse": "CapZha 录制器 + 编辑器的商业使用",
 			"communitySupport": "社区支持",
 			"localFeatures": "仅本地功能",
 			"perpetualOption": "永久许可证选项"
@@ -353,7 +353,7 @@
 	},
 	"integrationsPage": {
 		"title": "集成",
-		"description": "配置集成以扩展 Cap 的功能并连接第三方服务。",
+		"description": "配置集成以扩展 CapZha 的功能并连接第三方服务。",
 		"apps": {
 			"s3Config": {
 				"name": "S3 配置",
@@ -378,7 +378,7 @@
 			"delete": "S3 配置删除成功",
 			"test": "S3 配置测试成功！连接正常。"
 		},
-		"guideTextPre": "设置并将存储桶连接到 Cap 只需不到 10 分钟。查看 ",
+		"guideTextPre": "设置并将存储桶连接到 CapZha 只需不到 10 分钟。查看 ",
 		"guideLink": "存储配置指南",
 		"guideTextPost": " 开始。",
 		"storageProvider": "存储提供商",
@@ -703,7 +703,7 @@
 			"fontFamily": "字体系列",
 			"fontSize": "字体大小",
 			"highlight": "当前词高亮",
-			"highlightNote": "这是 Cap 字幕的第一个版本。当前词高亮在某些情况下可能不够准确。我们正在努力修复此问题，并将在后续版本中发布。",
+			"highlightNote": "这是 CapZha 字幕的第一个版本。当前词高亮在某些情况下可能不够准确。我们正在努力修复此问题，并将在后续版本中发布。",
 			"fontColor": "字体颜色",
 			"backgroundSettings": "背景设置",
 			"backgroundColor": "背景颜色",
@@ -749,7 +749,7 @@
 			"clipboard": "剪贴板",
 			"clipboardDescription": "复制以便在任何地方粘贴",
 			"shareableLink": "可分享链接",
-			"shareableLinkDescription": "通过 Cap 云分享",
+			"shareableLinkDescription": "通过 CapZha 云分享",
 			"format": "格式",
 			"noMp4Transparency": "MP4 不支持透明背景",
 			"linksRequireMp4": "链接分享仅支持 MP4 格式",
@@ -827,7 +827,7 @@
 				},
 				"link": {
 					"label": "链接",
-					"description": "通过 Cap 云分享"
+					"description": "通过 CapZha 云分享"
 				}
 			}
 		},
@@ -1047,17 +1047,17 @@
 	},
 	"setup": {
 		"permissionsRequired": "需要授权",
-		"description": "Cap 需要相关权限才能正常运行。",
+		"description": "CapZha 需要相关权限才能正常运行。",
 		"granted": "已授权",
 		"openSettings": "打开设置",
 		"grantPermission": "授予权限",
 		"continue": "继续",
-		"continueToCap": "进入 Cap",
+		"continueToCap": "进入 CapZha",
 		"restartRequired": "需要重启",
-		"restartMessage": "在系统设置中添加 Cap 后，您需要重启应用以使权限生效。",
+		"restartMessage": "在系统设置中添加 CapZha 后，您需要重启应用以使权限生效。",
 		"restartOk": "已授权，立即重启",
 		"restartCancel": "稍后，我还需设置",
-		"welcome": "欢迎使用 Cap",
+		"welcome": "欢迎使用 CapZha",
 		"tagline": "由您掌控的精美屏幕录制。",
 		"getStarted": "开始使用",
 		"selectMode": "选择录制模式",
@@ -1065,19 +1065,19 @@
 		"permissions": {
 			"screenRecording": {
 				"name": "屏幕录制",
-				"description": "在系统设置中添加 Cap，然后重启应用以使更改生效。"
+				"description": "在系统设置中添加 CapZha，然后重启应用以使更改生效。"
 			},
 			"accessibility": {
 				"name": "辅助功能",
-				"description": "在录制期间，Cap 会在本地收集鼠标活动，以生成自动缩放片段。"
+				"description": "在录制期间，CapZha 会在本地收集鼠标活动，以生成自动缩放片段。"
 			},
 			"microphone": {
 				"name": "麦克风",
-				"description": "录制 Caps 中的音频需要此权限。"
+				"description": "录制 CapZha 中的音频需要此权限。"
 			},
 			"camera": {
 				"name": "摄像头",
-				"description": "录制 Caps 中的摄像头画面需要此权限。"
+				"description": "录制 CapZha 中的摄像头画面需要此权限。"
 			}
 		}
 	},
@@ -1087,7 +1087,7 @@
 		"completeMessage": "您现在可以关闭此窗口了 - 感谢您的升级！",
 		"closeWindow": "关闭窗口",
 		"commercialLicense": "商业许可证",
-		"commercialDescription": "您的 Cap 商业用途许可证详情",
+		"commercialDescription": "您的 CapZha 商业用途许可证详情",
 		"licenseKey": "许可证密钥",
 		"expires": "有效期至",
 		"deactivating": "正在停用...",
@@ -1101,11 +1101,11 @@
 		"monthly": "月度",
 		"purchaseLicense": "购买许可证",
 		"alreadyHaveLicense": "已有许可证密钥？",
-		"capPro": "Cap 专业版",
+		"capPro": "CapZha 专业版",
 		"proDescription": "适用于专业人士和团队。",
 		"perUserBilledAnnually": "每用户，按年计费",
 		"perUserBilledMonthly": "每用户，按月计费",
-		"upgradeToPro": "升级到 Cap 专业版",
+		"upgradeToPro": "升级到 CapZha 专业版",
 		"proFeatures": {
 			"commercial": "包含商业许可证",
 			"storage": "无限云端存储和分享链接",
@@ -1117,7 +1117,7 @@
 			"support": "优先支持"
 		},
 		"pricing": {
-			"commercial": "Cap 录制器 + 编辑器商业使用权",
+			"commercial": "CapZha 录制器 + 编辑器商业使用权",
 			"support": "社区支持",
 			"localOnly": "仅本地功能",
 			"perpetual": "永久许可证选项"
@@ -1131,7 +1131,7 @@
 	"update": {
 		"noUpdate": "当前已是最新版本",
 		"installing": "正在安装更新",
-		"done": "更新已安装。重启 Cap 以完成更新。",
+		"done": "更新已安装。重启 CapZha 以完成更新。",
 		"restartNow": "立即重启"
 	},
 	"errorPage": {

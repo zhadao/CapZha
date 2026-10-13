@@ -134,18 +134,18 @@ impl CapWindowId {
 
     pub fn title(&self) -> String {
         match self {
-            Self::Setup => "Cap Setup".to_string(),
-            Self::Settings => "Cap Settings".to_string(),
-            Self::WindowCaptureOccluder { .. } => "Cap Window Capture Occluder".to_string(),
-            Self::CaptureArea => "Cap Capture Area".to_string(),
-            Self::RecordingControls => "Cap Recording Controls".to_string(),
-            Self::Editor { .. } => "Cap Editor".to_string(),
-            Self::ScreenshotEditor { .. } => "Cap Screenshot Editor".to_string(),
-            Self::ModeSelect => "Cap Mode Selection".to_string(),
-            Self::Camera => "Cap Camera".to_string(),
-            Self::RecordingsOverlay => "Cap Recordings Overlay".to_string(),
+            Self::Setup => "CapZha Setup".to_string(),
+            Self::Settings => "CapZha Settings".to_string(),
+            Self::WindowCaptureOccluder { .. } => "CapZha Window Capture Occluder".to_string(),
+            Self::CaptureArea => "CapZha Capture Area".to_string(),
+            Self::RecordingControls => "CapZha Recording Controls".to_string(),
+            Self::Editor { .. } => "CapZha Editor".to_string(),
+            Self::ScreenshotEditor { .. } => "CapZha Screenshot Editor".to_string(),
+            Self::ModeSelect => "CapZha Mode Selection".to_string(),
+            Self::Camera => "CapZha Camera".to_string(),
+            Self::RecordingsOverlay => "CapZha Recordings Overlay".to_string(),
             Self::InstantPreview => "即时录制预览".to_string(),  // 中文版：即时模式预览窗口
-            _ => "Cap".to_string(),
+            _ => "CapZha".to_string(),
         }
     }
 

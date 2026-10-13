@@ -44,11 +44,11 @@
 		"signOut": "Sign Out"
 	},
 	"app": {
-		"title": "Cap",
+		"title": "CapZha",
 		"subtitle": "Beautiful screen recording, truly yours.",
 		"update": {
-			"title": "Update Cap",
-			"message": "Version {{version}} of Cap is available, would you like to install it?",
+			"title": "Update CapZha",
+			"message": "Version {{version}} of CapZha is available, would you like to install it?",
 			"ok": "Update",
 			"ignore": "Ignore"
 		}
@@ -58,7 +58,7 @@
 		"formatMp4": "MP4",
 		"formatLabel": "Output format",
 		"storageDir": "Recordings folder",
-		"storageDirDefault": "Saved to the Cap folder inside your Videos folder by default, organized by date",
+		"storageDirDefault": "Saved to the CapZha folder inside your Videos folder by default, organized by date",
 		"storageDirPick": "Choose folder",
 		"storageDirReset": "Reset to default",
 		"maxRecordings": "Keep at most",
@@ -87,9 +87,9 @@
 		"studioFinishBehaviour": "Studio recording finish behaviour",
 		"studioFinishBehaviourDescription": "The studio recording finish behaviour",
 		"afterDeleteBehaviour": "After deleting recording behaviour",
-		"afterDeleteBehaviourDescription": "Should Cap reopen after deleting an in progress recording?",
+		"afterDeleteBehaviourDescription": "Should CapZha reopen after deleting an in progress recording?",
 		"deleteAfterUpload": "Delete instant mode recordings after upload",
-		"deleteAfterUploadDescription": "After finishing an instant recording, should Cap delete it from your device?",
+		"deleteAfterUploadDescription": "After finishing an instant recording, should CapZha delete it from your device?",
 		"crashRecovery": "Crash-recoverable recording",
 		"crashRecoveryDescription": "Records in fragmented segments that can be recovered if the app crashes or your system loses power. May have slightly higher storage usage during recording.",
 		"multiScreenAreaMode": "Multi-screen mode",
@@ -125,7 +125,7 @@
 				"description": "Capture and annotate screenshots instantly. Great for quick captures, bug reports, and visual communication."
 			}
 		},
-		"defaultName": "Cap Recording",
+		"defaultName": "CapZha Recording",
 		"captureArea": {
 			"close": "Close",
 			"reset": "Reset",
@@ -234,14 +234,14 @@
 		"storage": "Storage"
 	},
 	"settingsPage": {
-		"capPro": "Cap Pro",
+		"capPro": "CapZha Pro",
 		"autoOpenShareableLinks": "Automatically open shareable links",
-		"autoOpenShareableLinksDescription": "Whether Cap should automatically open instant recordings in your browser",
+		"autoOpenShareableLinksDescription": "Whether CapZha should automatically open instant recordings in your browser",
 		"app": "App",
 		"alwaysShowDockIcon": "Always show dock icon",
-		"alwaysShowDockIconDescription": "Show Cap in the dock even when there are no windows available to close.",
+		"alwaysShowDockIconDescription": "Show CapZha in the dock even when there are no windows available to close.",
 		"enableSystemNotifications": "Enable system notifications",
-		"enableSystemNotificationsDescription": "Show system notifications for events like copying to clipboard, saving files, and more. You may need to manually allow Cap access via your system's notification settings.",
+		"enableSystemNotificationsDescription": "Show system notifications for events like copying to clipboard, saving files, and more. You may need to manually allow CapZha access via your system's notification settings.",
 		"defaultProjectName": "Default Project Name",
 		"defaultProjectNameDescription": "Choose the template to use as the default project and file name.",
 		"howToCustomize": "How to customize?",
@@ -249,22 +249,22 @@
 		"recordingMode": "Recording Mode",
 		"excludedWindows": "Excluded Windows",
 		"excludedWindowsDescription": "List of windows to exclude from recordings and screenshots.",
-		"excludedWindowsDescriptionWindows": "List of windows that Cap should hide when recording.",
+		"excludedWindowsDescriptionWindows": "List of windows that CapZha should hide when recording.",
 		"addWindow": "Add Window",
 		"resetToDefaults": "Reset to Defaults",
 		"noExclusions": "No exclusions",
 		"selfHost": "Self host",
-		"capServerUrl": "Cap Server URL",
-		"capServerUrlDescription": "This setting should only be changed if you are self hosting your own instance of Cap Web.",
+		"capServerUrl": "CapZha Server URL",
+		"capServerUrlDescription": "This setting should only be changed if you are self hosting your own instance of CapZha Web.",
 		"confirmServerChange": "Are you sure you want to change the server URL to '{{origin}}'? You will need to sign in again.",
 		"target": "Target",
 		"dateAndTime": "Date & Time",
 		"customFormats": "Custom Formats",
-		"windowsExclusionNote": "Note: Only Cap related windows can be excluded on Windows due to technical limitations."
+		"windowsExclusionNote": "Note: Only CapZha related windows can be excluded on Windows due to technical limitations."
 	},
 	"hotkeysPage": {
 		"title": "Shortcuts",
-		"description": "Configure system-wide keyboard shortcuts to control Cap",
+		"description": "Configure system-wide keyboard shortcuts to control CapZha",
 		"setHotkeys": "Set hotkeys...",
 		"none": "None"
 	},
@@ -300,7 +300,7 @@
 		}
 	},
 	"licensePage": {
-		"proTitle": "Cap Pro License",
+		"proTitle": "CapZha Pro License",
 		"proDescriptionPrefix": "Your account is upgraded to ",
 		"proDescriptionSuffix": " and already includes a commercial license.",
 		"commercialTitle": "Commercial License",
@@ -320,7 +320,7 @@
 		"purchase": "Purchase License",
 		"loading": "Loading...",
 		"features": {
-			"commercialUse": "Commercial Use of Cap Recorder + Editor",
+			"commercialUse": "Commercial Use of CapZha Recorder + Editor",
 			"communitySupport": "Community Support",
 			"localFeatures": "Local-only features",
 			"perpetualOption": "Perpetual license option"
@@ -347,7 +347,7 @@
 	},
 	"integrationsPage": {
 		"title": "Integrations",
-		"description": "Configure integrations to extend Cap's functionality and connect with third-party services.",
+		"description": "Configure integrations to extend CapZha's functionality and connect with third-party services.",
 		"apps": {
 			"s3Config": {
 				"name": "S3 Config",
@@ -372,7 +372,7 @@
 			"delete": "S3 configuration deleted successfully",
 			"test": "S3 configuration test successful! Connection is working."
 		},
-		"guideTextPre": "It should take under 10 minutes to set up and connect your storage bucket to Cap. View the ",
+		"guideTextPre": "It should take under 10 minutes to set up and connect your storage bucket to CapZha. View the ",
 		"guideLink": "Storage Config Guide",
 		"guideTextPost": " to get started.",
 		"storageProvider": "Storage Provider",
@@ -697,7 +697,7 @@
 			"fontFamily": "Font Family",
 			"fontSize": "Size",
 			"highlight": "Active Word Highlight",
-			"highlightNote": "This is the first version of captions in Cap. Active word highlighting may be inaccurate in some situations. We're working on a fix for this and it will be released in upcoming versions.",
+			"highlightNote": "This is the first version of captions in CapZha. Active word highlighting may be inaccurate in some situations. We're working on a fix for this and it will be released in upcoming versions.",
 			"fontColor": "Font Color",
 			"backgroundSettings": "Background Settings",
 			"backgroundColor": "Background Color",
@@ -743,7 +743,7 @@
 			"clipboard": "Clipboard",
 			"clipboardDescription": "Copy to paste anywhere",
 			"shareableLink": "Shareable Link",
-			"shareableLinkDescription": "Share via Cap cloud",
+			"shareableLinkDescription": "Share via CapZha cloud",
 			"format": "Format",
 			"noMp4Transparency": "MP4 doesn't support transparency",
 			"linksRequireMp4": "Links require MP4 format",
@@ -785,7 +785,7 @@
 				"uploading": "Uploading...",
 				"uploadingProgress": "Uploading - {{progress}}%",
 				"uploadComplete": "Upload Complete",
-				"uploadSuccess": "Your Cap has been uploaded successfully",
+				"uploadSuccess": "Your CapZha has been uploaded successfully",
 				"renderingFrames": "Rendering {{type}} ({{current}}/{{total}} frames)",
 				"preparingRender": "Preparing to render..."
 			},
@@ -820,7 +820,7 @@
 				},
 				"link": {
 					"label": "Link",
-					"description": "Share via Cap cloud"
+					"description": "Share via CapZha cloud"
 				}
 			}
 		},
@@ -1038,37 +1038,37 @@
 	},
 	"setup": {
 		"permissionsRequired": "Permissions Required",
-		"description": "Cap needs permissions to run properly.",
+		"description": "CapZha needs permissions to run properly.",
 		"granted": "Granted",
 		"openSettings": "Open Settings",
 		"grantPermission": "Grant Permission",
 		"continue": "Continue",
-		"continueToCap": "Continue to Cap",
+		"continueToCap": "Continue to CapZha",
 		"restartRequired": "Restart Required",
-		"restartMessage": "After adding Cap in System Settings, you'll need to restart the app for the permission to take effect.",
+		"restartMessage": "After adding CapZha in System Settings, you'll need to restart the app for the permission to take effect.",
 		"restartOk": "Restart, I've granted permission",
 		"restartCancel": "No, I still need to add it",
-		"welcome": "Welcome to Cap",
+		"welcome": "Welcome to CapZha",
 		"tagline": "Beautiful screen recordings, owned by you.",
 		"getStarted": "Get Started",
 		"selectMode": "Select Recording Mode",
-		"modeDescription": "Choose how you want to record with Cap. You can change this later.",
+		"modeDescription": "Choose how you want to record with CapZha. You can change this later.",
 		"permissions": {
 			"screenRecording": {
 				"name": "Screen Recording",
-				"description": "Add Cap in System Settings, then restart the app for changes to take effect."
+				"description": "Add CapZha in System Settings, then restart the app for changes to take effect."
 			},
 			"accessibility": {
 				"name": "Accessibility",
-				"description": "During recording, Cap collects mouse activity locally to generate automatic zoom in segments."
+				"description": "During recording, CapZha collects mouse activity locally to generate automatic zoom in segments."
 			},
 			"microphone": {
 				"name": "Microphone",
-				"description": "This permission is required to record audio in your Caps."
+				"description": "This permission is required to record audio in your CapZha."
 			},
 			"camera": {
 				"name": "Camera",
-				"description": "This permission is required to record your camera in your Caps."
+				"description": "This permission is required to record your camera in your CapZha."
 			}
 		}
 	},
@@ -1078,7 +1078,7 @@
 		"completeMessage": "You can now close this window - thank you for upgrading!",
 		"closeWindow": "Close window",
 		"commercialLicense": "Commercial License",
-		"commercialDescription": "Your license details for Cap commercial use",
+		"commercialDescription": "Your license details for CapZha commercial use",
 		"licenseKey": "License Key",
 		"expires": "Expires",
 		"deactivating": "Deactivating...",
@@ -1092,11 +1092,11 @@
 		"monthly": "monthly",
 		"purchaseLicense": "Purchase License",
 		"alreadyHaveLicense": "Already have a license key?",
-		"capPro": "Cap Pro",
+		"capPro": "CapZha Pro",
 		"proDescription": "For professional use and teams.",
 		"perUserBilledAnnually": "per user, billed annually",
 		"perUserBilledMonthly": "per user, billed monthly",
-		"upgradeToPro": "Upgrade to Cap Pro",
+		"upgradeToPro": "Upgrade to CapZha Pro",
 		"proFeatures": {
 			"commercial": "Commercial License Included",
 			"storage": "Unlimited cloud storage & Shareable links",
@@ -1108,7 +1108,7 @@
 			"support": "Priority support"
 		},
 		"pricing": {
-			"commercial": "Commercial Use of Cap Recorder + Editor",
+			"commercial": "Commercial Use of CapZha Recorder + Editor",
 			"support": "Community Support",
 			"localOnly": "Local-only features",
 			"perpetual": "Perpetual license option"
@@ -1122,7 +1122,7 @@
 	"update": {
 		"noUpdate": "No update available",
 		"installing": "Installing Update",
-		"done": "Update has been installed. Restart Cap to finish updating.",
+		"done": "Update has been installed. Restart CapZha to finish updating.",
 		"restartNow": "Restart Now"
 	},
 	"errorPage": {
