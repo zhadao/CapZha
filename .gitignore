@@ -65,3 +65,6 @@ tauri-signing-key.key
 
 # 本地录制数据目录
 /data/
+
+# 本地打包成品目录
+/成品/
