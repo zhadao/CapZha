@@ -35,12 +35,6 @@ const SettingsScreenshotsPage = lazy(
 const SettingsHotkeysPage = lazy(
 	() => import("./routes/(window-chrome)/settings/hotkeys"),
 );
-const SettingsChangelogPage = lazy(
-	() => import("./routes/(window-chrome)/settings/changelog"),
-);
-const SettingsFeedbackPage = lazy(
-	() => import("./routes/(window-chrome)/settings/feedback"),
-);
 const SettingsExperimentalPage = lazy(
 	() => import("./routes/(window-chrome)/settings/experimental"),
 );
@@ -165,8 +159,6 @@ function Inner() {
 							<Route path="/recordings" component={SettingsRecordingsPage} />
 							<Route path="/screenshots" component={SettingsScreenshotsPage} />
 							<Route path="/hotkeys" component={SettingsHotkeysPage} />
-							<Route path="/changelog" component={SettingsChangelogPage} />
-							<Route path="/feedback" component={SettingsFeedbackPage} />
 							<Route
 								path="/experimental"
 								component={SettingsExperimentalPage}

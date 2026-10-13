@@ -234,6 +234,8 @@ pub enum ShowCapWindow {
     // 中文版：即时模式预览窗口
     InstantPreview {
         project_path: PathBuf,
+        format: String,
+        delivery_path: PathBuf,
     },
 }
 
@@ -1001,7 +1003,11 @@ impl ShowCapWindow {
                 window
             }
             // 中文版：即时模式预览窗口
-            Self::InstantPreview { project_path } => {
+            Self::InstantPreview {
+                project_path,
+                format,
+                delivery_path,
+            } => {
                 let title = CapWindowId::InstantPreview.title();
                 let should_protect = should_protect_window(app, &title);
 
@@ -1013,8 +1019,10 @@ impl ShowCapWindow {
                     .focused(true)
                     .content_protected(should_protect)
                     .initialization_script(format!(
-                        "window.__CAP_INSTANT_PROJECT_PATH__ = {:?};",
-                        project_path.to_string_lossy()
+                        "window.__CAP_INSTANT_PROJECT_PATH__ = {:?};window.__CAP_INSTANT_FORMAT__ = {:?};window.__CAP_INSTANT_DELIVERY__ = {:?};",
+                        project_path.to_string_lossy(),
+                        format,
+                        delivery_path.to_string_lossy()
                     ))
                     .build()?;
 

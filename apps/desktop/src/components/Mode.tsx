@@ -1,5 +1,6 @@
-import { createSignal } from "solid-js";
+import { createSignal, Show } from "solid-js";
 
+import { t } from "~/components/I18nProvider";
 import Tooltip from "~/components/Tooltip";
 import { useRecordingOptions } from "~/routes/(window-chrome)/OptionsContext";
 import { commands } from "~/utils/tauri";
@@ -22,6 +23,36 @@ const Mode = (props: ModeProps) => {
 
 	return (
 		<div class="flex gap-2 relative justify-end items-center p-1.5 rounded-full bg-gray-3 w-fit">
+			<Show when={rawOptions.mode === "instant"}>
+				<div class="flex gap-1 items-center pr-1.5 mr-0.5 border-r border-gray-5">
+					<div
+						onClick={() => {
+							setOptions({ instantFormat: "mp4" });
+							commands.setRecordingFormat("mp4");
+						}}
+						class={`px-2 py-1 text-[11px] leading-none rounded-full cursor-pointer transition-all duration-200 ${
+							(rawOptions.instantFormat ?? "mp4") === "mp4"
+								? "bg-blue-500 text-white"
+								: "bg-gray-3 hover:bg-gray-7 text-gray-12"
+						}`}
+					>
+						{t("recording.formatMp4")}
+					</div>
+					<div
+						onClick={() => {
+							setOptions({ instantFormat: "gif" });
+							commands.setRecordingFormat("gif");
+						}}
+						class={`px-2 py-1 text-[11px] leading-none rounded-full cursor-pointer transition-all duration-200 ${
+							rawOptions.instantFormat === "gif"
+								? "bg-blue-500 text-white"
+								: "bg-gray-3 hover:bg-gray-7 text-gray-12"
+						}`}
+					>
+						{t("recording.formatGif")}
+					</div>
+				</div>
+			</Show>
 			<div
 				class="absolute -left-1.5 -top-2 p-1 rounded-full w-fit bg-gray-5 group"
 				onClick={handleInfoClick}

@@ -4,7 +4,7 @@ use chrono::NaiveDate;
 use serde::{Deserialize, Serialize};
 use specta::Type;
 use std::path::PathBuf;
-use tauri::{AppHandle, Manager};
+use tauri::AppHandle;
 use tracing::info;
 
 use crate::create_screenshot;
@@ -44,18 +44,17 @@ pub struct IncompleteRecordingInfo {
 pub async fn find_incomplete_recordings(
     app: AppHandle,
 ) -> Result<Vec<IncompleteRecordingInfo>, String> {
-    let recordings_dir = app
-        .path()
-        .app_data_dir()
-        .map_err(|e| e.to_string())?
-        .join("recordings");
+    let scan_dirs = crate::storage::project_scan_dirs(&app);
 
-    if !recordings_dir.exists() {
+    if scan_dirs.is_empty() {
         return Ok(Vec::new());
     }
 
     let result = tokio::task::spawn_blocking(move || {
-        let incomplete_list = RecoveryManager::find_incomplete(&recordings_dir);
+        let mut incomplete_list = Vec::new();
+        for dir in &scan_dirs {
+            incomplete_list.extend(RecoveryManager::find_incomplete(dir));
+        }
 
         incomplete_list
             .into_iter()
@@ -77,15 +76,12 @@ pub async fn find_incomplete_recordings(
 #[tauri::command]
 #[specta::specta]
 pub async fn recover_recording(app: AppHandle, project_path: String) -> Result<String, String> {
-    let recordings_dir = app
-        .path()
-        .app_data_dir()
-        .map_err(|e| e.to_string())?
-        .join("recordings");
-
     let path = PathBuf::from(&project_path);
 
-    let incomplete_list = RecoveryManager::find_incomplete(&recordings_dir);
+    let mut incomplete_list = Vec::new();
+    for dir in crate::storage::project_scan_dirs(&app) {
+        incomplete_list.extend(RecoveryManager::find_incomplete(&dir));
+    }
 
     let recording = incomplete_list
         .into_iter()

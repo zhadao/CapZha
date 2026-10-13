@@ -8,7 +8,7 @@ import { type OsType, type } from "@tauri-apps/plugin-os";
 import "@total-typescript/ts-reset/filter-boolean";
 import { Collapsible } from "@kobalte/core/collapsible";
 import { CheckMenuItem, Menu, MenuItem } from "@tauri-apps/api/menu";
-import { confirm } from "@tauri-apps/plugin-dialog";
+import { confirm, open } from "@tauri-apps/plugin-dialog";
 import { cx } from "cva";
 import {
 	createEffect,
@@ -564,6 +564,59 @@ function Inner(props: { initialStore: GeneralSettingsStore | null }) {
 							</p>
 						)}
 					</div>
+				</SettingGroup>
+
+				<SettingGroup title={t('settings.storage')}>
+					<SettingItem
+						label={t('recording.storageDir')}
+						description={
+							settings.recordingsDir ?? t('recording.storageDirDefault')
+						}
+					>
+						<div class="flex flex-row gap-2 items-center">
+							<Button
+								size="sm"
+								variant="gray"
+								onClick={async () => {
+									const selected = await open({
+										directory: true,
+										multiple: false,
+									});
+									if (typeof selected === "string") {
+										handleChange("recordingsDir", selected);
+									}
+								}}
+							>
+								{t('recording.storageDirPick')}
+							</Button>
+							<Show when={settings.recordingsDir}>
+								<Button
+									size="sm"
+									variant="gray"
+									onClick={() => handleChange("recordingsDir", null)}
+								>
+									{t('recording.storageDirReset')}
+								</Button>
+							</Show>
+						</div>
+					</SettingItem>
+					<SettingItem
+						label={t('recording.maxRecordings')}
+						description={t('recording.maxRecordingsDescription')}
+					>
+						<Input
+							class="bg-gray-3 w-24"
+							type="number"
+							min="0"
+							value={settings.maxRecordings ?? 50}
+							onInput={(e) =>
+								handleChange(
+									"maxRecordings",
+									Math.max(0, Number(e.currentTarget.value) || 0),
+								)
+							}
+						/>
+					</SettingItem>
 				</SettingGroup>
 
 				<DefaultProjectNameCard

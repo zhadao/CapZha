@@ -1197,6 +1197,7 @@ dependencies = [
  "cap-camera",
  "cap-editor",
  "cap-enc-ffmpeg",
+ "cap-enc-gif",
  "cap-export",
  "cap-fail",
  "cap-flags",
@@ -4442,9 +4443,9 @@ checksum = "e8a5a9a0ff0086c7a148acb942baaabeadf9504d10400b5a05645853729b9cd2"
 
 [[package]]
 name = "indexmap"
-version = "1.9.3"
+version = "1.9.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "bd070e393353796e801d209ad339e89596eb4c8d430d18ede6a1cced8fafbd99"
+checksum = "1885e79c1fc4b10f0e172c475f458b7f7b93061064d98c3293e98c5ba0c8b399"
 dependencies = [
  "autocfg",
  "hashbrown 0.12.3",
@@ -7859,7 +7860,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "3fbf2ae1b8bc8e02df939598064d22402220cd5bbcca1c76f7d6a310974d5615"
 dependencies = [
  "dyn-clone",
- "indexmap 1.9.3",
+ "indexmap 1.9.2",
  "schemars_derive",
  "serde",
  "serde_json",
@@ -8298,7 +8299,7 @@ dependencies = [
  "base64 0.22.1",
  "chrono",
  "hex",
- "indexmap 1.9.3",
+ "indexmap 1.9.2",
  "indexmap 2.11.4",
  "schemars 0.9.0",
  "schemars 1.0.4",

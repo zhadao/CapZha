@@ -130,6 +130,10 @@ pub struct GeneralSettingsStore {
     pub max_fps: u32,
     #[serde(default)]
     pub editor_preview_quality: EditorPreviewQuality,
+    #[serde(default)]
+    pub recordings_dir: Option<String>,
+    #[serde(default = "default_max_recordings")]
+    pub max_recordings: u32,
 }
 
 fn default_enable_native_camera_preview() -> bool {
@@ -150,6 +154,10 @@ fn default_instant_mode_max_resolution() -> u32 {
 
 fn default_max_fps() -> u32 {
     60
+}
+
+fn default_max_recordings() -> u32 {
+    50
 }
 
 fn default_server_url() -> String {
@@ -196,6 +204,8 @@ impl Default for GeneralSettingsStore {
             crash_recovery_recording: true,
             max_fps: 60,
             editor_preview_quality: EditorPreviewQuality::Half,
+            recordings_dir: None,
+            max_recordings: 50,
         }
     }
 }

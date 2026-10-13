@@ -129,12 +129,6 @@ struct PreviousItemsCache {
     items: Vec<CachedPreviousItem>,
 }
 
-fn recordings_path(app: &AppHandle) -> PathBuf {
-    let path = app.path().app_data_dir().unwrap().join("recordings");
-    std::fs::create_dir_all(&path).unwrap_or_default();
-    path
-}
-
 fn screenshots_path(app: &AppHandle) -> PathBuf {
     let path = app.path().app_data_dir().unwrap().join("screenshots");
     std::fs::create_dir_all(&path).unwrap_or_default();
@@ -250,14 +244,9 @@ fn load_all_previous_items(app: &AppHandle, load_thumbnails: bool) -> Vec<Cached
     let mut items = Vec::new();
     let screenshots_dir = screenshots_path(app);
 
-    let recordings_dir = recordings_path(app);
-    if recordings_dir.exists() {
-        if let Ok(entries) = std::fs::read_dir(&recordings_dir) {
-            for entry in entries.flatten() {
-                if let Some(item) = load_single_item(&entry.path(), &screenshots_dir, load_thumbnails) {
-                    items.push(item);
-                }
-            }
+    for path in crate::storage::iter_project_dirs(app) {
+        if let Some(item) = load_single_item(&path, &screenshots_dir, load_thumbnails) {
+            items.push(item);
         }
     }
 

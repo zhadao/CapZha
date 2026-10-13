@@ -541,9 +541,6 @@ function Startup(props: { onClose: () => void }) {
 								<p class="text-sm text-white font-medium leading-relaxed">
 									本软件完全免费分享，如有人向您收费，请立即退款！
 								</p>
-								<p class="text-xs text-white/80 mt-3 pt-3 border-t border-white/20">
-									Cap 开源项目中文适配版（B站 @跨界胶水 优化）
-								</p>
 							</div>
 						</div>
 

@@ -14,6 +14,16 @@ pub enum RecordingTargetMode {
     Area,
 }
 
+#[derive(
+    serde::Serialize, serde::Deserialize, specta::Type, Debug, Clone, Copy, PartialEq, Eq, Default,
+)]
+#[serde(rename_all = "camelCase")]
+pub enum InstantFormat {
+    #[default]
+    Mp4,
+    Gif,
+}
+
 #[derive(serde::Serialize, serde::Deserialize, specta::Type, Debug, Clone, Default)]
 #[serde(rename_all = "camelCase")]
 pub struct RecordingSettingsStore {
@@ -23,6 +33,8 @@ pub struct RecordingSettingsStore {
     pub mode: Option<RecordingMode>,
     pub system_audio: bool,
     pub organization_id: Option<String>,
+    #[serde(default)]
+    pub instant_format: Option<InstantFormat>,
 }
 
 impl RecordingSettingsStore {
@@ -47,6 +59,16 @@ impl RecordingSettingsStore {
         store.set(Self::KEY, serde_json::json!(settings));
         store.save().map_err(|e| e.to_string())
     }
+
+    pub fn set_format(app: &AppHandle<Wry>, format: InstantFormat) -> Result<(), String> {
+        let store = app.store("store").map_err(|e| e.to_string())?;
+
+        let mut settings = Self::get(app)?.unwrap_or_default();
+        settings.instant_format = Some(format);
+
+        store.set(Self::KEY, serde_json::json!(settings));
+        store.save().map_err(|e| e.to_string())
+    }
 }
 
 #[tauri::command]
@@ -55,4 +77,10 @@ pub fn set_recording_mode(app: AppHandle, mode: RecordingMode) -> Result<(), Str
     RecordingSettingsStore::set_mode(&app, mode)?;
     tray::update_tray_icon_for_mode(&app, mode);
     Ok(())
+}
+
+#[tauri::command]
+#[specta::specta]
+pub fn set_recording_format(app: AppHandle, format: InstantFormat) -> Result<(), String> {
+    RecordingSettingsStore::set_format(&app, format)
 }

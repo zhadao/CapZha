@@ -41,8 +41,6 @@
 		"integrations": "集成",
 		"license": "许可证",
 		"experimental": "实验性功能",
-		"feedback": "反馈",
-		"changelog": "赞助我们",
 		"signIn": "登录",
 		"signOut": "退出登录"
 	},
@@ -57,6 +55,21 @@
 		}
 	},
 	"recording": {
+		"formatGif": "GIF图",
+		"formatMp4": "MP4",
+		"formatLabel": "输出格式",
+		"storageDir": "录制保存目录",
+		"storageDirDefault": "默认保存在系统「视频」文件夹下的 Cap 目录，按日期分类",
+		"storageDirPick": "选择目录",
+		"storageDirReset": "恢复默认",
+		"maxRecordings": "最多保留录制数",
+		"maxRecordingsDescription": "超出数量的旧录制会被自动删除",
+		"copyPrompt": "是否复制到剪贴板？",
+		"copy": "复制到剪贴板",
+		"copied": "已复制到剪贴板",
+		"copyFailed": "复制失败",
+		"gifGenerating": "正在生成 GIF…",
+		"gifFailed": "GIF 生成失败，已保留 MP4",
 		"start": "开始录制",
 		"stop": "停止录制",
 		"pause": "暂停",
@@ -220,8 +233,7 @@
 		"integrations": "集成",
 		"license": "许可证",
 		"experimental": "实验性",
-		"feedback": "反馈",
-		"changelog": "赞助我们"
+		"storage": "存储"
 	},
 	"settingsPage": {
 		"capPro": "Cap Pro",
@@ -336,10 +348,6 @@
 				"description": "在工作室模式录制期间，围绕鼠标点击自动生成缩放片段。这有助于突出显示录制中的重要交互。"
 			}
 		}
-	},
-	"feedbackPage": {
-		"title": "问题反馈",
-		"description": "遇到问题？扫码添加微信直接联系我"
 	},
 	"integrationsPage": {
 		"title": "集成",
@@ -1125,10 +1133,5 @@
 		"copyError": "复制错误信息",
 		"reload": "重新加载",
 		"close": "关闭"
-	},
-	"changelogPage": {
-		"title": "赞助我们",
-		"description": "如果这个软件对您有帮助，欢迎请我喝杯咖啡 ☕",
-		"thanks": "感谢您的支持，您的鼓励是我持续更新的动力！"
 	}
 }

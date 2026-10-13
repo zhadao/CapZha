@@ -14,6 +14,15 @@ async setCameraInput(id: DeviceOrModelID | null) : Promise<null> {
 async setRecordingMode(mode: RecordingMode) : Promise<null> {
     return await TAURI_INVOKE("set_recording_mode", { mode });
 },
+async setRecordingFormat(format: InstantFormat) : Promise<null> {
+    return await TAURI_INVOKE("set_recording_format", { format });
+},
+async instantDeliveryReady(deliveryPath: string) : Promise<boolean> {
+    return await TAURI_INVOKE("instant_delivery_ready", { deliveryPath });
+},
+async copyInstantRecording(path: string) : Promise<null> {
+    return await TAURI_INVOKE("copy_instant_recording", { path });
+},
 async uploadLogs() : Promise<null> {
     return await TAURI_INVOKE("upload_logs");
 },
@@ -470,6 +479,7 @@ export type HotkeysConfiguration = { show: boolean }
 export type HotkeysStore = { hotkeys: { [key in HotkeyAction]: Hotkey } }
 export type ImportStage = "Probing" | "Converting" | "Finalizing" | "Complete" | "Failed"
 export type IncompleteRecordingInfo = { projectPath: string; prettyName: string; segmentCount: number; estimatedDurationSecs: number }
+export type InstantFormat = "mp4" | "gif"
 export type InstantRecordingMeta = { recording: boolean } | { error: string } | { fps: number; sample_rate: number | null }
 export type JsonValue<T> = [T]
 export type LogicalBounds = { position: LogicalPosition; size: LogicalSize }
@@ -511,7 +521,7 @@ export type RecordingMeta = (StudioRecordingMeta | InstantRecordingMeta) & { pla
 export type RecordingMetaWithMetadata = ((StudioRecordingMeta | InstantRecordingMeta) & { platform?: Platform | null; pretty_name: string; sharing?: SharingMeta | null; upload?: UploadMeta | null }) & { mode: RecordingMode; status: StudioRecordingStatus }
 export type RecordingMode = "studio" | "instant" | "screenshot"
 export type RecordingOptionsChanged = null
-export type RecordingSettingsStore = { target: ScreenCaptureTarget | null; micName: string | null; cameraId: DeviceOrModelID | null; mode: RecordingMode | null; systemAudio: boolean; organizationId: string | null }
+export type RecordingSettingsStore = { target: ScreenCaptureTarget | null; micName: string | null; cameraId: DeviceOrModelID | null; mode: RecordingMode | null; systemAudio: boolean; organizationId: string | null; instantFormat?: InstantFormat | null }
 export type RecordingStarted = null
 export type RecordingStatus = "pending" | "recording"
 export type RecordingStopped = null
@@ -535,7 +545,7 @@ export type ShadowConfiguration = { size: number; opacity: number; blur: number 
 export type SharingMeta = { id: string; link: string }
 export type ShowCapWindow = "Setup" | { Main: { init_target_mode: RecordingTargetMode | null } } | { Settings: { page: string | null } } | { Editor: { project_path: string } } | "RecordingsOverlay" | { WindowCaptureOccluder: { screen_id: DisplayId } } | { TargetSelectOverlay: { display_id: DisplayId } } | { CaptureArea: { screen_id: DisplayId } } | "Camera" | { InProgressRecording: { countdown: number | null } } | "Upgrade" | "ModeSelect" | { ScreenshotEditor: { path: string } } | { InstantPreview: { project_path: string } }
 export type SingleSegment = { display: VideoMeta; camera?: VideoMeta | null; audio?: AudioMeta | null; cursor?: string | null }
-export type StartRecordingInputs = { capture_target: ScreenCaptureTarget; capture_system_audio?: boolean; mode: RecordingMode; organization_id?: string | null }
+export type StartRecordingInputs = { capture_target: ScreenCaptureTarget; capture_system_audio?: boolean; mode: RecordingMode; organization_id?: string | null; instant_format?: InstantFormat }
 export type StereoMode = "stereo" | "monoL" | "monoR"
 export type StudioRecordingMeta = { segment: SingleSegment } | { inner: MultipleSegments }
 export type StudioRecordingStatus = { status: "InProgress" } | { status: "NeedsRemux" } | { status: "Failed"; error: string } | { status: "Complete" }

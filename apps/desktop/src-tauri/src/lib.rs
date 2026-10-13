@@ -14,6 +14,7 @@ mod fake_window;
 mod flags;
 mod frame_ws;
 mod general_settings;
+mod gif_convert;
 mod hotkeys;
 mod http_client;
 mod import;
@@ -27,6 +28,7 @@ mod recording;
 mod recording_settings;
 mod recovery;
 mod screenshot_editor;
+mod storage;
 mod target_select_overlay;
 mod thumbnails;
 mod tray;
@@ -1266,6 +1268,17 @@ async fn copy_file_to_path(app: AppHandle, src: String, dst: String) -> Result<(
     Err(last_error.unwrap_or_else(|| "Maximum retry attempts exceeded".to_string()))
 }
 
+#[tauri::command]
+#[specta::specta]
+async fn instant_delivery_ready(delivery_path: String) -> bool {
+    let path = std::path::Path::new(&delivery_path);
+
+    match std::fs::metadata(path) {
+        Ok(metadata) => metadata.len() > 0,
+        Err(_) => false,
+    }
+}
+
 pub fn is_valid_video(path: &std::path::Path) -> bool {
     match ffmpeg::format::input(path) {
         Ok(input_context) => {
@@ -1502,6 +1515,27 @@ async fn copy_video_to_clipboard(
         &app,
         notifications::NotificationType::VideoCopiedToClipboard,
     );
+    Ok(())
+}
+
+#[tauri::command]
+#[specta::specta]
+#[instrument(skip(clipboard))]
+async fn copy_instant_recording(
+    clipboard: MutableState<'_, ClipboardContext>,
+    path: String,
+) -> Result<(), String> {
+    let file = std::path::Path::new(&path);
+    if !file.exists() {
+        return Err(format!("Recording file '{path}' does not exist"));
+    }
+
+    clipboard
+        .write()
+        .await
+        .set_files(vec![path])
+        .map_err(|err| format!("Failed to copy recording to clipboard: {err}"))?;
+
     Ok(())
 }
 
@@ -1909,19 +1943,23 @@ async fn save_file_dialog(
         .to_string();
     println!("File name after removing .cap suffix: {file_name}");
 
-    let (name, extension) = match file_type.as_str() {
-        "recording" => {
-            println!("File type is recording");
-            ("MP4 Video", "mp4")
-        }
-        "screenshot" => {
-            println!("File type is screenshot");
-            ("PNG Image", "png")
-        }
-        _ => {
-            println!("Invalid file type: {file_type}");
-            return Err("Invalid file type".to_string());
-        }
+    let extension_from_name = std::path::Path::new(&file_name)
+        .extension()
+        .and_then(|ext| ext.to_str())
+        .map(|ext| ext.to_ascii_lowercase());
+
+    let (name, extension) = match extension_from_name.as_deref() {
+        Some("gif") => ("GIF Image", "gif"),
+        Some("png") => ("PNG Image", "png"),
+        Some("mp4") => ("MP4 Video", "mp4"),
+        _ => match file_type.as_str() {
+            "recording" => ("MP4 Video", "mp4"),
+            "screenshot" => ("PNG Image", "png"),
+            _ => {
+                println!("Invalid file type: {file_type}");
+                return Err("Invalid file type".to_string());
+            }
+        },
     };
 
     println!("Showing save dialog with name: {name}, extension: {extension}");
@@ -2025,26 +2063,9 @@ fn get_recording_meta(
 #[specta::specta]
 #[instrument(skip(app))]
 fn list_recordings(app: AppHandle) -> Result<Vec<(PathBuf, RecordingMetaWithMetadata)>, String> {
-    let recordings_dir = recordings_path(&app);
-
-    if !recordings_dir.exists() {
-        return Ok(Vec::new());
-    }
-
-    let mut result = std::fs::read_dir(&recordings_dir)
-        .map_err(|e| format!("Failed to read recordings directory: {e}"))?
-        .filter_map(|entry| {
-            let entry = match entry {
-                Ok(e) => e,
-                Err(_) => return None,
-            };
-
-            let path = entry.path();
-
-            if !path.is_dir() {
-                return None;
-            }
-
+    let mut result = storage::iter_project_dirs(&app)
+        .into_iter()
+        .filter_map(|path| {
             get_recording_meta(path.clone(), FileType::Recording)
                 .ok()
                 .map(|meta| (path, meta))
@@ -2562,6 +2583,7 @@ pub async fn run(recording_logging_handle: LoggingHandle, logs_dir: PathBuf) {
             set_mic_input,
             set_camera_input,
             recording_settings::set_recording_mode,
+            recording_settings::set_recording_format,
             upload_logs,
             get_system_diagnostics,
             recording::start_recording,
@@ -2592,6 +2614,8 @@ pub async fn run(recording_logging_handle: LoggingHandle, logs_dir: PathBuf) {
             import::start_video_import,
             import::check_import_ready,
             copy_file_to_path,
+            instant_delivery_ready,
+            copy_instant_recording,
             copy_video_to_clipboard,
             copy_screenshot_to_clipboard,
             copy_image_to_clipboard,
@@ -2999,6 +3023,7 @@ pub async fn run(recording_logging_handle: LoggingHandle, logs_dir: PathBuf) {
                         mode: event.mode,
                         capture_system_audio: settings.system_audio,
                         organization_id: settings.organization_id,
+                        instant_format: settings.instant_format.unwrap_or_default(),
                     }
                 })
                 .await;
@@ -3297,16 +3322,8 @@ fn reopen_main_window(app: &AppHandle) {
 }
 
 async fn resume_uploads(app: AppHandle) -> Result<(), String> {
-    let recordings_dir = recordings_path(&app);
-    if !recordings_dir.exists() {
-        return Err("Recording directory missing".to_string());
-    }
-
-    let entries = std::fs::read_dir(&recordings_dir)
-        .map_err(|e| format!("Failed to read recordings directory: {e}"))?;
-    for entry in entries.flatten() {
-        let path = entry.path();
-        if path.is_dir() && path.extension().and_then(|s| s.to_str()) == Some("cap") {
+    for path in storage::iter_project_dirs(&app) {
+        {
             // Load recording meta to check for in-progress recordings
             if let Ok(mut meta) = RecordingMeta::load_for_project(&path) {
                 let mut needs_save = false;
@@ -3541,16 +3558,6 @@ async fn wait_for_recording_ready(app: &AppHandle, path: &Path) -> Result<(), St
 
     Ok(())
 }
-
-fn recordings_path(app: &AppHandle) -> PathBuf {
-    let path = app.path().app_data_dir().unwrap().join("recordings");
-    std::fs::create_dir_all(&path).unwrap_or_default();
-    path
-}
-
-// fn recording_path(app: &AppHandle, recording_id: &str) -> PathBuf {
-//     recordings_path(app).join(format!("{recording_id}.cap"))
-// }
 
 fn screenshots_path(app: &AppHandle) -> PathBuf {
     let path = app.path().app_data_dir().unwrap().join("screenshots");

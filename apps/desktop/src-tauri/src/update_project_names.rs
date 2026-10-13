@@ -10,8 +10,6 @@ use tauri::AppHandle;
 use tauri_plugin_store::StoreExt;
 use tokio::{fs, sync::Mutex};
 
-use crate::recordings_path;
-
 const STORE_KEY: &str = "uuid_projects_migrated";
 
 pub fn migrate_if_needed(app: &AppHandle) -> Result<(), String> {
@@ -48,15 +46,17 @@ use std::time::Instant;
 
 /// Performs a one-time migration of all UUID-named projects to pretty name-based naming.
 pub async fn migrate(app: &AppHandle) -> Result<(), String> {
-    let recordings_dir = recordings_path(app);
-    if !fs::try_exists(&recordings_dir)
-        .await
-        .map_err(|e| format!("Failed to check recordings directory: {e}"))?
-    {
+    let scan_dirs = crate::storage::project_scan_dirs(app);
+
+    if scan_dirs.is_empty() {
         return Ok(());
     }
 
-    let uuid_projects = collect_uuid_projects(&recordings_dir).await?;
+    let mut uuid_projects = Vec::new();
+    for dir in scan_dirs {
+        uuid_projects.extend(collect_uuid_projects(&dir).await?);
+    }
+
     if uuid_projects.is_empty() {
         tracing::debug!("No UUID-named projects found to migrate");
         return Ok(());

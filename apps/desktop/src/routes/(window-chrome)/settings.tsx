@@ -2,7 +2,6 @@ import { Button } from "@cap/ui-solid";
 import { A, type RouteSectionProps } from "@solidjs/router";
 import { getVersion } from "@tauri-apps/api/app";
 import { getCurrentWindow, LogicalSize } from "@tauri-apps/api/window";
-import * as shell from "@tauri-apps/plugin-shell";
 import "@total-typescript/ts-reset/filter-boolean";
 import { createResource, For, onMount, Show, Suspense } from "solid-js";
 import { CapErrorBoundary } from "~/components/CapErrorBoundary";
@@ -70,16 +69,6 @@ export default function Settings(props: RouteSectionProps) {
 								name: t("nav.experimental"),
 								icon: IconCapSettings,
 							},
-							{
-								href: "feedback",
-								name: t("nav.feedback"),
-								icon: IconLucideMessageSquarePlus,
-							},
-							{
-								href: "changelog",
-								name: t("nav.changelog"),
-								icon: IconLucideBell,
-							},
 						].filter(Boolean)}
 					>
 						{(item) => (
@@ -101,13 +90,6 @@ export default function Settings(props: RouteSectionProps) {
 						{(v) => (
 							<div class="mb-2 text-xs text-gray-11 flex flex-col items-start gap-0.5">
 								<span>v{v()}</span>
-								<button
-									type="button"
-									class="text-gray-11 hover:text-gray-12 underline transition-colors"
-									onClick={() => shell.open("https://cap.so/download/versions")}
-								>
-									View previous versions
-								</button>
 							</div>
 						)}
 					</Show>

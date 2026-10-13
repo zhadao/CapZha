@@ -156,6 +156,7 @@ export function createOptionsQuery() {
 		targetMode?: "display" | "window" | "area" | null;
 		cameraID?: DeviceOrModelID | null;
 		organizationId?: string | null;
+		instantFormat?: "mp4" | "gif";
 		/** @deprecated */
 		cameraLabel: string | null;
 	}>({
@@ -164,6 +165,7 @@ export function createOptionsQuery() {
 		cameraLabel: null,
 		mode: "studio",
 		organizationId: null,
+		instantFormat: "mp4",
 	});
 
 	createEventListener(window, "storage", (e) => {
@@ -177,6 +179,9 @@ export function createOptionsQuery() {
 			if (data?.mode && data.mode !== _state.mode) {
 				_setState("mode", data.mode);
 			}
+			if (data?.instantFormat && data.instantFormat !== _state.instantFormat) {
+				_setState("instantFormat", data.instantFormat);
+			}
 			initialized = true;
 		});
 	});
@@ -189,6 +194,7 @@ export function createOptionsQuery() {
 			mode: _state.mode,
 			systemAudio: _state.captureSystemAudio,
 			organizationId: _state.organizationId,
+			instantFormat: _state.instantFormat,
 		};
 
 		if (initialized) {
@@ -199,6 +205,9 @@ export function createOptionsQuery() {
 	const storeListenerCleanup = recordingSettingsStore.listen((data) => {
 		if (data?.mode && data.mode !== _state.mode) {
 			_setState("mode", data.mode);
+		}
+		if (data?.instantFormat && data.instantFormat !== _state.instantFormat) {
+			_setState("instantFormat", data.instantFormat);
 		}
 	});
 	onCleanup(() => storeListenerCleanup.then((c) => c()));

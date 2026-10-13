@@ -40,8 +40,6 @@
 		"integrations": "Integrations",
 		"license": "License",
 		"experimental": "Experimental",
-		"feedback": "Feedback",
-		"changelog": "Changelog",
 		"signIn": "Sign In",
 		"signOut": "Sign Out"
 	},
@@ -56,6 +54,21 @@
 		}
 	},
 	"recording": {
+		"formatGif": "GIF",
+		"formatMp4": "MP4",
+		"formatLabel": "Output format",
+		"storageDir": "Recordings folder",
+		"storageDirDefault": "Saved to the Cap folder inside your Videos folder by default, organized by date",
+		"storageDirPick": "Choose folder",
+		"storageDirReset": "Reset to default",
+		"maxRecordings": "Keep at most",
+		"maxRecordingsDescription": "Older recordings beyond this count are deleted automatically",
+		"copyPrompt": "Copy to clipboard?",
+		"copy": "Copy to clipboard",
+		"copied": "Copied to clipboard",
+		"copyFailed": "Copy failed",
+		"gifGenerating": "Generating GIF…",
+		"gifFailed": "GIF generation failed, MP4 was kept",
 		"start": "Start Recording",
 		"stop": "Stop Recording",
 		"pause": "Pause",
@@ -216,8 +229,7 @@
 		"integrations": "Integrations",
 		"license": "License",
 		"experimental": "Experimental",
-		"feedback": "Feedback",
-		"changelog": "Changelog"
+		"storage": "Storage"
 	},
 	"settingsPage": {
 		"capPro": "Cap Pro",
@@ -330,29 +342,6 @@
 				"description": "Automatically generate zoom segments around mouse clicks during Studio Mode recordings. This helps highlight important interactions in your recordings."
 			}
 		}
-	},
-	"feedbackPage": {
-		"title": "Send Feedback",
-		"description": "Help us improve Cap by submitting feedback or reporting bugs. We'll get right on it.",
-		"placeholder": "Tell us what you think about Cap...",
-		"submit": "Submit Feedback",
-		"submitting": "Submitting...",
-		"success": "Thank you for your feedback!",
-		"error": "Failed to submit feedback",
-		"debugInfo": "Debug Information",
-		"debugDescription": "Upload your logs to help us diagnose issues with Cap. No personal information is included.",
-		"uploadLogs": "Upload Logs",
-		"uploading": "Uploading...",
-		"uploadSuccess": "Logs uploaded successfully",
-		"uploadError": "Failed to upload logs",
-		"systemInfo": "System Information",
-		"loadingSystemInfo": "Loading system information...",
-		"os": "Operating System",
-		"captureSupport": "Capture Support",
-		"screenCapture": "Screen Capture",
-		"supported": "Supported",
-		"notSupported": "Not Supported",
-		"availableEncoders": "Available Encoders"
 	},
 	"integrationsPage": {
 		"title": "Integrations",
@@ -1135,10 +1124,5 @@
 		"copyError": "Copy Error to Clipboard",
 		"reload": "Reload",
 		"close": "Close"
-	},
-	"changelogPage": {
-		"title": "Changelog",
-		"localMode": "Remote changelog cannot be loaded directly in development mode. Please visit GitHub for the latest updates.",
-		"viewOnGitHub": "View Releases on GitHub"
 	}
 }

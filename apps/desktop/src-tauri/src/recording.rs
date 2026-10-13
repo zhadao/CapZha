@@ -223,6 +223,7 @@ impl InProgressRecording {
                 progressive_upload,
                 video_upload_info,
                 target_name: common.target_name,
+                instant_format: common.inputs.instant_format,
             },
             Self::Studio { handle, common, .. } => CompletedRecording::Studio {
                 recording: handle.stop().await?,
@@ -259,6 +260,7 @@ pub enum CompletedRecording {
         target_name: String,
         progressive_upload: InstantMultipartUpload,
         video_upload_info: Option<VideoUploadInfo>,  // 中文版：改为 Option 以支持未登录用户
+        instant_format: crate::recording_settings::InstantFormat,
     },
     Studio {
         recording: studio_recording::CompletedRecording,
@@ -339,6 +341,8 @@ pub struct StartRecordingInputs {
     pub mode: RecordingMode,
     #[serde(default)]
     pub organization_id: Option<String>,
+    #[serde(default)]
+    pub instant_format: crate::recording_settings::InstantFormat,
 }
 
 #[derive(Deserialize, Type, Serialize, Clone, Copy, Debug, PartialEq, Eq, Hash)]
@@ -473,15 +477,7 @@ pub async fn start_recording(
         None,
     );
 
-    let filename = project_name.replace(":", ".");
-    let filename = format!("{}.cap", sanitize_filename::sanitize(&filename));
-
-    let recordings_base_dir = app.path().app_data_dir().unwrap().join("recordings");
-
-    let project_file_path = recordings_base_dir.join(&cap_utils::ensure_unique_filename(
-        &filename,
-        &recordings_base_dir,
-    )?);
+    let project_file_path = crate::storage::new_project_dir(&app, chrono::Local::now());
 
     ensure_dir(&project_file_path)
         .map_err(|e| format!("Failed to create recording directory: {e}"))?;
@@ -1538,6 +1534,7 @@ async fn handle_recording_finish(
             recording,
             progressive_upload,
             video_upload_info,
+            instant_format,
             ..
         } => {
             let app = app.clone();
@@ -1648,15 +1645,70 @@ async fn handle_recording_finish(
                     }),
                 )
             } else {
-                // 中文版：未登录用户，不上传，直接保存本地
                 let _ = screenshot_task.await;
                 progressive_upload.handle.abort();
-                
-                // 中文版：录制完成后打开即时模式预览窗口
-                let _ = ShowCapWindow::InstantPreview { 
-                    project_path: recording_dir.clone() 
-                }.show(&app).await;
-                
+
+                let extension = match instant_format {
+                    crate::recording_settings::InstantFormat::Gif => "gif",
+                    crate::recording_settings::InstantFormat::Mp4 => "mp4",
+                };
+                let delivery_path =
+                    crate::storage::delivery_path(&app, chrono::Local::now(), extension);
+                let output_path = recording_dir.join("content/output.mp4");
+
+                match instant_format {
+                    crate::recording_settings::InstantFormat::Gif => {
+                        let task_app = app.clone();
+                        let task_input = output_path.clone();
+                        let task_gif = recording_dir.join("content/output.gif");
+                        let task_delivery = delivery_path.clone();
+
+                        tokio::spawn(async move {
+                            let convert_output = task_gif.clone();
+
+                            let result = tokio::task::spawn_blocking(move || {
+                                crate::gif_convert::convert_instant_gif(
+                                    &task_input,
+                                    &convert_output,
+                                )
+                            })
+                            .await;
+
+                            match result {
+                                Ok(Ok(())) => {
+                                    if let Err(error) =
+                                        crate::storage::link_or_copy(&task_gif, &task_delivery)
+                                    {
+                                        error!("Failed to prepare instant GIF: {error}");
+                                    }
+                                }
+                                Ok(Err(error)) => {
+                                    error!("Failed to convert instant recording to GIF: {error}")
+                                }
+                                Err(error) => error!("GIF conversion task failed: {error}"),
+                            }
+
+                            crate::storage::cleanup_old_recordings(&task_app);
+                        });
+                    }
+                    crate::recording_settings::InstantFormat::Mp4 => {
+                        if let Err(error) = crate::storage::link_or_copy(&output_path, &delivery_path)
+                        {
+                            error!("Failed to prepare instant recording file: {error}");
+                        }
+
+                        crate::storage::cleanup_old_recordings(&app);
+                    }
+                }
+
+                let _ = ShowCapWindow::InstantPreview {
+                    project_path: recording_dir.clone(),
+                    format: extension.to_string(),
+                    delivery_path: delivery_path.clone(),
+                }
+                .show(&app)
+                .await;
+
                 (
                     RecordingMetaInner::Instant(recording.meta),
                     None,

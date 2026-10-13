@@ -1015,6 +1015,7 @@ function RecordingControls(props: {
 									capture_target: props.target,
 									mode: rawOptions.mode,
 									capture_system_audio: rawOptions.captureSystemAudio,
+									instant_format: rawOptions.instantFormat ?? "mp4",
 								});
 							}}
 						>
