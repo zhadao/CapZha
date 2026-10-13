@@ -92,6 +92,8 @@
 		"deleteAfterUploadDescription": "After finishing an instant recording, should Cap delete it from your device?",
 		"crashRecovery": "Crash-recoverable recording",
 		"crashRecoveryDescription": "Records in fragmented segments that can be recovered if the app crashes or your system loses power. May have slightly higher storage usage during recording.",
+		"multiScreenAreaMode": "Multi-screen mode",
+		"multiScreenAreaModeDescription": "For area recording: off — crop only on the screen where the cursor is; on — first click to choose the target screen, then crop within that screen.",
 		"maxFramerate": "Max capture framerate",
 		"maxFramerateDescription": "Maximum frame rate for screen capture. Higher values may lead to instability on some systems.",
 		"highFramerateWarning": "⚠️ Higher frame rates may lead to dropped frames or increased CPU usage on some systems.",
@@ -474,6 +476,11 @@
 	"targetSelect": {
 		"monitor": "Monitor",
 		"adjustArea": "Adjust recording area",
+		"screenPick": {
+			"title": "Screen {{index}}",
+			"titleNoIndex": "Select screen",
+			"subtitle": "Click to select this screen, then crop the recording area"
+		},
 		"resetSelection": "Reset selection",
 		"minSize": "Minimum size is {{width}} x {{height}}",
 		"tooSmall": "{{width}} x {{height}} is too small",

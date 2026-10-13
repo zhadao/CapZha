@@ -26,7 +26,7 @@ import themePreviewDark from "~/assets/theme-previews/dark.jpg";
 import themePreviewLight from "~/assets/theme-previews/light.jpg";
 import { t, useI18n } from "~/components/I18nProvider";
 import { Input } from "~/routes/editor/ui";
-import { authStore, generalSettingsStore } from "~/store";
+import { authStore, generalSettingsStore, recordingSettingsStore } from "~/store";
 import { languages } from "~/utils/i18n";
 import {
 	type AppTheme,
@@ -244,6 +244,18 @@ function Inner(props: { initialStore: GeneralSettingsStore | null }) {
 		setSettings(key as keyof GeneralSettingsStore, value);
 		generalSettingsStore.set({ [key]: value, ...(extra ?? {}) });
 	};
+
+	// 中文版多屏修复：区域录制「多屏幕模式」开关（存于 recording_settings store）。
+	// 关=仅光标所在屏框选；开=先点选目标屏幕再框选。
+	const [multiScreenAreaMode, setMultiScreenAreaMode] = createSignal(false);
+	onMount(async () => {
+		try {
+			const recordingSettings = await recordingSettingsStore.get();
+			setMultiScreenAreaMode(recordingSettings?.multiScreenAreaMode ?? false);
+		} catch (error) {
+			console.error("Failed to read multi-screen area mode setting:", error);
+		}
+	});
 
 	const ostype: OsType = type();
 	const excludedWindows = createMemo(() => settings.excludedWindows ?? []);
@@ -546,6 +558,22 @@ function Inner(props: { initialStore: GeneralSettingsStore | null }) {
 						description={t('recording.crashRecoveryDescription')}
 						value={settings.crashRecoveryRecording ?? true}
 						onChange={(value) => handleChange("crashRecoveryRecording", value)}
+					/>
+					<ToggleSettingItem
+						label={t('recording.multiScreenAreaMode')}
+						description={t('recording.multiScreenAreaModeDescription')}
+						value={multiScreenAreaMode()}
+						onChange={(value) => {
+							setMultiScreenAreaMode(value);
+							commands
+								.setMultiScreenAreaMode(value)
+								.catch((error) =>
+									console.error(
+										"Failed to set multi-screen area mode:",
+										error,
+									),
+								);
+						}}
 					/>
 					<div class="flex flex-col gap-1">
 						<SelectSettingItem

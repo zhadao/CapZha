@@ -596,7 +596,10 @@ function Page() {
 			reconcile({ variant: "display", id: target.id }),
 		);
 		setOptions("targetMode", "display");
-		commands.openTargetSelectOverlays({ variant: "display", id: target.id });
+		commands.openTargetSelectOverlays(
+			{ variant: "display", id: target.id },
+			"display",
+		);
 		setDisplayMenuOpen(false);
 		displayTriggerRef?.focus();
 	};
@@ -607,7 +610,10 @@ function Page() {
 			reconcile({ variant: "window", id: target.id }),
 		);
 		setOptions("targetMode", "window");
-		commands.openTargetSelectOverlays({ variant: "window", id: target.id });
+		commands.openTargetSelectOverlays(
+			{ variant: "window", id: target.id },
+			"window",
+		);
 		setWindowMenuOpen(false);
 		windowTriggerRef?.focus();
 
@@ -633,7 +639,7 @@ function Page() {
 		};
 		const targetMode = __CAP__?.initialTargetMode ?? null;
 		setOptions({ targetMode });
-		if (targetMode) await commands.openTargetSelectOverlays(null);
+		if (targetMode) await commands.openTargetSelectOverlays(null, targetMode);
 		else await commands.closeTargetSelectOverlays();
 
 		const currentWindow = getCurrentWindow();
@@ -792,7 +798,7 @@ function Page() {
 		if (isRecording()) return;
 		const nextMode = rawOptions.targetMode === mode ? null : mode;
 		setOptions("targetMode", nextMode);
-		if (nextMode) commands.openTargetSelectOverlays(null);
+		if (nextMode) commands.openTargetSelectOverlays(null, nextMode);
 		else commands.closeTargetSelectOverlays();
 	};
 

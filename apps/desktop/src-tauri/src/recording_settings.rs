@@ -35,6 +35,11 @@ pub struct RecordingSettingsStore {
     pub organization_id: Option<String>,
     #[serde(default)]
     pub instant_format: Option<InstantFormat>,
+    /// 中文版多屏修复：区域录制「多屏幕模式」。
+    /// false（默认）= 仅在光标所在屏幕框选（单屏行为）；
+    /// true = 先在各屏高亮点选目标屏幕，再在该屏内框选区域。
+    #[serde(default)]
+    pub multi_screen_area_mode: bool,
 }
 
 impl RecordingSettingsStore {
@@ -69,6 +74,19 @@ impl RecordingSettingsStore {
         store.set(Self::KEY, serde_json::json!(settings));
         store.save().map_err(|e| e.to_string())
     }
+
+    pub fn set_multi_screen_area_mode(
+        app: &AppHandle<Wry>,
+        enabled: bool,
+    ) -> Result<(), String> {
+        let store = app.store("store").map_err(|e| e.to_string())?;
+
+        let mut settings = Self::get(app)?.unwrap_or_default();
+        settings.multi_screen_area_mode = enabled;
+
+        store.set(Self::KEY, serde_json::json!(settings));
+        store.save().map_err(|e| e.to_string())
+    }
 }
 
 #[tauri::command]
@@ -83,4 +101,10 @@ pub fn set_recording_mode(app: AppHandle, mode: RecordingMode) -> Result<(), Str
 #[specta::specta]
 pub fn set_recording_format(app: AppHandle, format: InstantFormat) -> Result<(), String> {
     RecordingSettingsStore::set_format(&app, format)
+}
+
+#[tauri::command]
+#[specta::specta]
+pub fn set_multi_screen_area_mode(app: AppHandle, enabled: bool) -> Result<(), String> {
+    RecordingSettingsStore::set_multi_screen_area_mode(&app, enabled)
 }

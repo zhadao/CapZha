@@ -10,6 +10,7 @@ use cap_recording::screen_capture::ScreenCaptureTarget;
 
 use crate::{
     App, ArcLock, general_settings,
+    recording_settings::{RecordingTargetMode, RecordingSettingsStore},
     window_exclusion::WindowExclusion,
     windows::{CapWindowId, ShowCapWindow},
 };
@@ -53,11 +54,28 @@ pub async fn open_target_select_overlays(
     app: AppHandle,
     state: tauri::State<'_, WindowFocusManager>,
     focused_target: Option<ScreenCaptureTarget>,
+    target_mode: Option<RecordingTargetMode>,
 ) -> Result<(), String> {
-    let displays = scap_targets::Display::list()
+    let all_displays = scap_targets::Display::list()
         .into_iter()
         .map(|d| d.id())
         .collect::<Vec<_>>();
+
+    // 中文版多屏修复：「多屏幕模式」关闭 + 区域选择时，只在光标所在屏打开
+    // overlay（默认单屏行为），避免混合 DPI 下"两屏连起来看"导致选区偏移。
+    let displays = if target_mode.is_some_and(|mode| matches!(mode, RecordingTargetMode::Area))
+        && !RecordingSettingsStore::get(&app)
+            .ok()
+            .flatten()
+            .map(|s| s.multi_screen_area_mode)
+            .unwrap_or(false)
+    {
+        Display::get_containing_cursor()
+            .map(|d| vec![d.id()])
+            .unwrap_or(all_displays) // 光标所在屏查询失败时回退为打开全部
+    } else {
+        all_displays
+    };
     for display_id in displays {
         let _ = ShowCapWindow::TargetSelectOverlay { display_id }
             .show(&app)
@@ -205,6 +223,31 @@ pub async fn close_target_select_overlays(app: AppHandle) -> Result<(), String> 
     Ok(())
 }
 
+/// 中文版多屏修复：「多屏幕模式」下点选目标屏幕后，关闭除该屏以外的
+/// 所有 target-select-overlay（选屏阶段清场，只留被选中屏幕继续框选）。
+#[specta::specta]
+#[tauri::command]
+#[instrument(skip(app))]
+pub async fn close_target_select_overlays_except(
+    app: AppHandle,
+    display_id: &str,
+) -> Result<(), String> {
+    let keep_display_id = display_id
+        .parse::<DisplayId>()
+        .map_err(|err| format!("Invalid display ID: {err}"))?;
+
+    for (id, window) in app.webview_windows() {
+        if let Ok(CapWindowId::TargetSelectOverlay { display_id }) = CapWindowId::from_str(&id) {
+            if display_id == keep_display_id {
+                continue;
+            }
+            let _ = window.close();
+        }
+    }
+
+    Ok(())
+}
+
 #[specta::specta]
 #[tauri::command]
 #[instrument]
@@ -326,8 +369,19 @@ impl WindowFocusManager {
 
                     #[cfg(windows)]
                     if let Some(cap_main) = cap_main {
-                        let should_refocus = cap_main.is_focused().ok().unwrap_or_default()
+                        let mut should_refocus = cap_main.is_focused().ok().unwrap_or_default()
                             || window.is_focused().unwrap_or_default();
+
+                        if !should_refocus {
+                            // 中文版多屏修复：其他 target-select-overlay 或设置窗口持有
+                            // 焦点时不要抢焦点，否则双屏下两个 overlay 每 400ms 互相
+                            // 抢焦点，造成频闪并打断框选拖拽。
+                            should_refocus = app.webview_windows().iter().any(|(label, w)| {
+                                (label.starts_with("target-select-overlay")
+                                    || label == "settings")
+                                    && w.is_focused().unwrap_or(false)
+                            });
+                        }
 
                         // If a Cap window is not focused we know something is trying to steal the focus.
                         // We need to move the overlay above it. We don't use `always_on_top` on the overlay because we need the Cap window to stay above it.

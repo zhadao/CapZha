@@ -93,6 +93,8 @@
 		"deleteAfterUploadDescription": "完成即时录制后，Cap 是否应该从您的设备中删除它？",
 		"crashRecovery": "崩溃恢复录制",
 		"crashRecoveryDescription": "以分段方式录制，如果应用崩溃或系统断电可以恢复。录制期间可能会占用稍多的存储空间。",
+		"multiScreenAreaMode": "多屏幕模式",
+		"multiScreenAreaModeDescription": "区域录制时：关闭则仅在光标所在屏幕框选；开启则先点击选择目标屏幕，再在该屏幕内框选区域。",
 		"maxFramerate": "最大捕获帧率",
 		"maxFramerateDescription": "屏幕捕获的最大帧率。较高的值可能会在某些系统上导致不稳定。",
 		"highFramerateWarning": "⚠️ 较高的帧率可能会在某些系统上导致丢帧或增加 CPU 使用率。",
@@ -480,6 +482,11 @@
 	"targetSelect": {
 		"monitor": "显示器",
 		"adjustArea": "调整录制区域",
+		"screenPick": {
+			"title": "屏幕 {{index}}",
+			"titleNoIndex": "选择屏幕",
+			"subtitle": "点击选择此屏幕，然后框选录制区域"
+		},
 		"resetSelection": "重置选择",
 		"minSize": "最小尺寸为 {{width}} x {{height}}",
 		"tooSmall": "{{width}} x {{height}} 太小了",

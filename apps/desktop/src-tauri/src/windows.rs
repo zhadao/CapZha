@@ -427,7 +427,28 @@ impl ShowCapWindow {
 
                 #[cfg(windows)]
                 {
-                    window_builder = window_builder.inner_size(100.0, 100.0).position(0.0, 0.0);
+                    // 中文版多屏修复（根因版）：让 overlay 窗口"出生"在目标显示器上。
+                    // wry 的 WebView2 controller 创建时一次性读取父窗口所在显示器 DPI
+                    //（wry src/webview2/mod.rs: hwnd_dpi(parent)），此后永不更新；旧实现
+                    // 先在主屏 (0,0) 建窗口再 set_position 移到副屏，副屏 overlay 的
+                    // WebView2 永远按主屏 200% 渲染，CSS 视口=物理/2，框选与录制坐标全错。
+                    // tao builder 的 position 会用每块屏自己的 scale 换算并"落在哪建在哪"
+                    //（tao window.rs: 逐 monitor to_physical 判断落点，inner_size 也按目标
+                    // 屏 scale 换算），因此这里传目标屏自己的逻辑坐标，窗口从创建起就在
+                    // 正确的屏、正确的 DPI，一生无需跨屏移动。
+                    if let Some(logical_size) = display
+                        .logical_size()
+                        .filter(|s| s.width() > 0.0 && s.height() > 0.0)
+                    {
+                        let scale = expected_w as f64 / logical_size.width();
+                        window_builder = window_builder
+                            .inner_size(logical_size.width(), logical_size.height())
+                            .position(expected_x as f64 / scale, expected_y as f64 / scale);
+                    } else {
+                        // logical_size 获取失败时退回旧行为（出生主屏 + 事后物理直设）
+                        window_builder =
+                            window_builder.inner_size(100.0, 100.0).position(0.0, 0.0);
+                    }
                 }
 
                 let window = window_builder.build()?;

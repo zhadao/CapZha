@@ -17,6 +17,9 @@ async setRecordingMode(mode: RecordingMode) : Promise<null> {
 async setRecordingFormat(format: InstantFormat) : Promise<null> {
     return await TAURI_INVOKE("set_recording_format", { format });
 },
+async setMultiScreenAreaMode(enabled: boolean) : Promise<null> {
+    return await TAURI_INVOKE("set_multi_screen_area_mode", { enabled });
+},
 async instantDeliveryReady(deliveryPath: string) : Promise<boolean> {
     return await TAURI_INVOKE("instant_delivery_ready", { deliveryPath });
 },
@@ -304,11 +307,14 @@ async deleteWhisperModel(modelPath: string) : Promise<null> {
 async exportCaptionsSrt(videoId: string) : Promise<string | null> {
     return await TAURI_INVOKE("export_captions_srt", { videoId });
 },
-async openTargetSelectOverlays(focusedTarget: ScreenCaptureTarget | null) : Promise<null> {
-    return await TAURI_INVOKE("open_target_select_overlays", { focusedTarget });
+async openTargetSelectOverlays(focusedTarget: ScreenCaptureTarget | null, targetMode: RecordingTargetMode | null) : Promise<null> {
+    return await TAURI_INVOKE("open_target_select_overlays", { focusedTarget, targetMode });
 },
 async closeTargetSelectOverlays() : Promise<null> {
     return await TAURI_INVOKE("close_target_select_overlays");
+},
+async closeTargetSelectOverlaysExcept(displayId: string) : Promise<null> {
+    return await TAURI_INVOKE("close_target_select_overlays_except", { displayId });
 },
 async updateCameraOverlayBounds(x: number, y: number, width: number, height: number) : Promise<null> {
     return await TAURI_INVOKE("update_camera_overlay_bounds", { x, y, width, height });
@@ -521,7 +527,7 @@ export type RecordingMeta = (StudioRecordingMeta | InstantRecordingMeta) & { pla
 export type RecordingMetaWithMetadata = ((StudioRecordingMeta | InstantRecordingMeta) & { platform?: Platform | null; pretty_name: string; sharing?: SharingMeta | null; upload?: UploadMeta | null }) & { mode: RecordingMode; status: StudioRecordingStatus }
 export type RecordingMode = "studio" | "instant" | "screenshot"
 export type RecordingOptionsChanged = null
-export type RecordingSettingsStore = { target: ScreenCaptureTarget | null; micName: string | null; cameraId: DeviceOrModelID | null; mode: RecordingMode | null; systemAudio: boolean; organizationId: string | null; instantFormat?: InstantFormat | null }
+export type RecordingSettingsStore = { target: ScreenCaptureTarget | null; micName: string | null; cameraId: DeviceOrModelID | null; mode: RecordingMode | null; systemAudio: boolean; organizationId: string | null; instantFormat?: InstantFormat | null; multiScreenAreaMode?: boolean }
 export type RecordingStarted = null
 export type RecordingStatus = "pending" | "recording"
 export type RecordingStopped = null

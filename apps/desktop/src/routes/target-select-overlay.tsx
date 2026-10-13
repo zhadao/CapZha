@@ -46,7 +46,7 @@ import {
 import { t } from "~/components/I18nProvider";
 import ModeSelect from "~/components/ModeSelect";
 import SelectionHint from "~/components/selection-hint";
-import { authStore, generalSettingsStore } from "~/store";
+import { authStore, generalSettingsStore, recordingSettingsStore } from "~/store";
 import { createDevicesQuery } from "~/utils/devices";
 import {
 	createCameraMutation,
@@ -444,7 +444,7 @@ function Inner() {
 										setOptions({
 											targetMode: "area",
 										});
-										commands.openTargetSelectOverlays(null);
+										commands.openTargetSelectOverlays(null, "area");
 									}}
 								>
 									{t("targetSelect.adjustArea")}
@@ -461,6 +461,29 @@ function Inner() {
 				{(displayId) => {
 					let controlsEl: HTMLDivElement | undefined;
 					let cropperRef: CropperRef | undefined;
+
+					// 中文版多屏修复：「多屏幕模式」开启时的选屏阶段。
+					// 先在各屏高亮点选目标屏幕（选中后关闭其他屏的 overlay），
+					// 再进入原有 Cropper 框选流程；从"调整录制区域"（initialAreaBounds）
+					// 进入时已隐含目标屏，跳过选屏。
+					const recordingSettings = recordingSettingsStore.createQuery();
+					const screenPickDisplays = useQuery(() => ({
+						queryKey: ["capture", "displays"],
+						queryFn: () => commands.listCaptureDisplays(),
+						staleTime: 10_000,
+					}));
+					const screenIndex = createMemo(() => {
+						const idx = screenPickDisplays.data?.findIndex(
+							(d) => d.id === displayId(),
+						);
+						return idx !== undefined && idx >= 0 ? idx + 1 : undefined;
+					});
+					const [screenPicked, setScreenPicked] = createSignal(false);
+					const showScreenPick = () =>
+						(recordingSettings.data?.multiScreenAreaMode ?? false) &&
+						(screenPickDisplays.data?.length ?? 0) > 1 &&
+						initialAreaBounds() === undefined &&
+						!screenPicked();
 
 					const [cameraWindow, setCameraWindow] =
 						createSignal<WebviewWindow | null>(null);
@@ -835,12 +858,42 @@ function Inner() {
 					});
 
 					return (
-						<div class="fixed w-screen h-screen">
-							<div
-								ref={controlsEl}
-								class="fixed z-50 transition-opacity"
-								style={controlsStyle()}
-							>
+						<Show
+							when={!showScreenPick()}
+							fallback={
+								<div
+									data-over={
+										targetUnderCursor.display_id === displayId()
+									}
+									class="relative w-screen h-screen flex flex-col items-center justify-center data-[over='true']:bg-blue-600/40 transition-colors cursor-pointer"
+									onClick={() => {
+										setScreenPicked(true);
+										commands.closeTargetSelectOverlaysExcept(displayId());
+									}}
+								>
+									<div class="absolute inset-0 bg-black/60 -z-10" />
+									<div class="flex flex-col items-center text-white">
+										<IconCapMonitor class="size-20 mb-3" />
+										<span class="mb-2 text-3xl font-semibold">
+											{screenIndex() !== undefined
+												? t("targetSelect.screenPick.title", {
+														index: screenIndex(),
+													})
+												: t("targetSelect.screenPick.titleNoIndex")}
+										</span>
+										<span class="text-sm">
+											{t("targetSelect.screenPick.subtitle")}
+										</span>
+									</div>
+								</div>
+							}
+						>
+							<div class="fixed w-screen h-screen">
+								<div
+									ref={controlsEl}
+									class="fixed z-50 transition-opacity"
+									style={controlsStyle()}
+								>
 								<div class="flex flex-col items-center">
 									<Show when={options.mode !== "screenshot"}>
 										<RecordingControls
@@ -901,7 +954,8 @@ function Inner() {
 								snapToRatioEnabled={snapToRatioEnabled()}
 								onContextMenu={(e) => showCropOptionsMenu(e)}
 							/>
-						</div>
+							</div>
+						</Show>
 					);
 				}}
 			</Match>
