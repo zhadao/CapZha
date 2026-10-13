@@ -7,7 +7,7 @@
 <p align="center">
   基于 <a href="https://github.com/CapSoftware/Cap">Cap</a> 的中文增强版开源屏幕录制工具
   <br />
-  <a href="https://github.com/zhadao/capTestforZha"><strong>GitHub 仓库 »</strong></a>
+  <a href="https://github.com/zhadao/CapZha"><strong>GitHub 仓库 »</strong></a>
   <br />
   <b>支持平台：</b>Windows（macOS / Linux 未适配）
 </p>
@@ -49,7 +49,7 @@
 ## 🚀 安装使用
 
 ### 方法一：便携版（推荐）
-1. 从 [Releases](https://github.com/zhadao/capTestforZha/releases) 下载 `CapZha-vX.X.X-win64-便携版.zip`
+1. 从 [Releases](https://github.com/zhadao/CapZha/releases) 下载 `CapZha-vX.X.X-win64-便携版.zip`
 2. 解压到任意目录
 3. 双击 `CapZha.exe` 即可使用 —— 前端资源已完整内嵌，无需安装、无需联网、无需任何依赖
 
@@ -61,7 +61,7 @@
 
 ```bash
 # 克隆仓库
-git clone https://github.com/zhadao/capTestforZha.git
+git clone https://github.com/zhadao/CapZha.git
 cd capTestforZha
 
 # 安装依赖
@@ -97,7 +97,7 @@ cargo build --release -p cap-desktop --features custom-protocol
 
 - **Cap 官方项目**：<https://github.com/CapSoftware/Cap>
 - **Cap 中文版（上游）**：<https://github.com/lid664951-crypto/Cap>
-- **本项目（CapZha）**：<https://github.com/zhadao/capTestforZha>
+- **本项目（CapZha）**：<https://github.com/zhadao/CapZha>
 
 ## 🤝 贡献
 
